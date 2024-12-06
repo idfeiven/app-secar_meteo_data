@@ -1,26 +1,30 @@
+import os
+import sys
 import streamlit as st
-import os, sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "modules"))
+sys.path.append(os.path.join(os.path.dirname(__file__), "data"))
 
-import daily_summary_page
-import recent_data_page
-import annual_comparison_page
-import historical_data_page
-import statistics_page
-import extreme_data_page
+homepage = st.Page("modules/homepage.py", title = "Home")
+current_conditions_page = st.Page("modules/current_conditions_page.py", title = "Current conditions")
+daily_summary_page = st.Page("modules/daily_summary_page.py", title = "Daily summary")
+recent_data_page = st.Page("modules/recent_data_page.py", title = "Recent data")
+historical_data_page = st.Page("modules/historical_data_page.py", title = "Historical data")
+annual_comparison_page = st.Page("modules/annual_comparison_page.py", title = "Annual comparison page")
+statistics_page = st.Page("modules/statistics_page.py", title = "Statistics")
+extreme_data_page = st.Page("modules/extreme_data_page.py", title = "Data extremes")
 
-# Create pages and sidebar
-page_names_to_funcs = {
-    # "Home": homepage,
-    # "Current conditions": current_conditions_page,
-    "Daily summary": daily_summary_page,
-    "Recent data": recent_data_page,
-    "Annual data comparison": annual_comparison_page,
-    "Historical data": historical_data_page,
-    "Statistics": statistics_page,
-    "Data extremes": extreme_data_page
-}
+# for multiple pages in one category, define a dictionary
 
-demo_name = st.sidebar.selectbox("Choose a page", page_names_to_funcs.keys())
-page_names_to_funcs[demo_name]
+pg = st.navigation([homepage,
+                    current_conditions_page,
+                    daily_summary_page,
+                    recent_data_page,
+                    # historical_data_page,
+                    # annual_comparison_page,
+                    # statistics_page,
+                    # extreme_data_page,
+                    ]
+                  )
+
+pg.run()

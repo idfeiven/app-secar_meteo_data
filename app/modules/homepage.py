@@ -9,13 +9,13 @@ def _get_map_data():
         columns=['lat', 'lon'])
     return map_data
 
-def homepage():
-    # Título de la aplicación
-    st.title("Palma Secar de la Real weather data")
 
-    st.write("In this web app you can find my weather station data\
-            located in Palma Secar de la Real neighborhood, Mallorca")
+# Título de la aplicación
+st.title("Palma Secar de la Real weather data")
 
-    st.markdown("## Station location")
-    map_data = _get_map_data()
-    st.map(map_data)
+st.write("In this web app you can find my weather station data\
+        located in Palma Secar de la Real neighborhood, Mallorca")
+
+st.markdown("## Station location")
+map_data = _get_map_data()
+st.map(map_data)

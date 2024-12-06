@@ -12,7 +12,7 @@ import plotly.express as px
 
 @st.cache_data
 def _load_10min_data():
-    fpath = os.getcwd() +  r'/secar_10min_data.xlsx'
+    fpath = 'secar_10min_data.xlsx'
     daily_data = pd.read_excel(fpath)
     daily_data = daily_data.drop('Unnamed: 0', axis = 1)
     daily_data.set_index('date', inplace = True)

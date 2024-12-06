@@ -7,7 +7,7 @@ from datetime import datetime
 # Cargar el dataset desde un archivo local
 @st.cache_data
 def _load_daily_data():
-    fpath = os.getcwd() +  r'/secar_daily_data.xlsx'
+    fpath = "secar_daily_data.xlsx"
     daily_data = pd.read_excel(fpath)
     daily_data = daily_data.drop('Unnamed: 0', axis = 1)
     daily_data.set_index('date', inplace = True)

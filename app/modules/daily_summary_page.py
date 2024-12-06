@@ -1,14 +1,38 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-from current_conditions_page import _get_current_weather_data
 import matplotlib.pyplot as plt
+import requests
+
+
+def __get_url_api_wu(mode): #set mode. Accepts current, daily
+    station_id = 'IPALMA141' #select a station id from Weather Underground
+    api_key = 'd4a43e6d3abf4b17a43e6d3abfdb1772' #introduce your api key        
+    if mode == 'current':
+        url_pws = f"https://api.weather.com/v2/pws/observations/current?stationId={station_id}&format=json&units=m&apiKey={api_key}&numericPrecision=decimal"
+    elif mode == 'daily':
+        url_pws = f"https://api.weather.com/v2/pws/observations/all/1day?stationId={station_id}&format=json&units=m&apiKey={api_key}&numericPrecision=decimal"
+
+    return(url_pws)
 
 
 def _select_column_box(data, key):
     # Seleccionar una variable del dataset
     column = st.selectbox("Select a variable to plot", data.columns, key = key)
     return column
+
+def _get_current_weather_data(mode): #set mode. Accepts current, daily
+
+    url_pws = __get_url_api_wu(mode = mode)            
+    response = requests.get(url_pws)
+
+    if response.status_code == 200:
+        current_data = response.json()
+        current_data = pd.json_normalize(current_data['observations'])
+        return current_data
+    else:
+        st.write("Failed to retrieve weather data")
+        return pd.DataFrame()
 
 
 def _get_daily_summary(today_data):
@@ -92,25 +116,23 @@ def _plot_static_current(data_current, column):
     st.pyplot(fig)
 
 
-def daily_summary_page():
+st.markdown("# Palma Secar de la Real daily summary")
 
-    st.markdown("# Palma Secar de la Real daily summary")
+st.write("Data is updated every 5 minutes. Refresh the page to update.")
 
-    st.write("Data is updated every 5 minutes. Refresh the page to update.")
+today_data = _get_current_weather_data(mode = 'daily')
+if not(today_data.empty):
+    today_data = _parse_today_data(today_data)
+    
 
-    today_data = _get_current_weather_data(mode = 'daily')
-    if not(today_data.empty):
-        today_data = _parse_today_data(today_data)
-        
+    daily_summary = _get_daily_summary(today_data)
+    st.markdown(f'## Daily summary for {today_data.index[0].date()}')
+    st.dataframe(daily_summary)
 
-        daily_summary = _get_daily_summary(today_data)
-        st.markdown(f'## Daily summary for {today_data.index[0].date()}')
-        st.dataframe(daily_summary)
+    st.markdown('## 5 minute data plots')
+    column = _select_column_box(today_data, key = "temperature_deg")
+    _plot_interactive_current(today_data, column)
+    _plot_static_current(today_data, column)
 
-        st.markdown('## 5 minute data plots')
-        column = _select_column_box(today_data, key = "temperature_deg")
-        _plot_interactive_current(today_data, column)
-        _plot_static_current(today_data, column)
-
-        st.markdown("## 5 minute data in table")
-        st.dataframe(today_data)
+    st.markdown("## 5 minute data in table")
+    st.dataframe(today_data)

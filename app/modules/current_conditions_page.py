@@ -45,15 +45,13 @@ def _show_current_weather_data(current_data):
         col3.metric("Rain rate (mm/h)", current_data['metric.precipRate'])
 
 
-def current_conditions_page():
+st.markdown("## Current conditions")
+st.write("Data taken from Wunderground web API. Update interval: 20 seconds")
 
-    st.markdown("## Current conditions")
-    st.write("Data taken from Wunderground web API. Update interval: 20 seconds")
-
-    while True:
-        current_data = _get_current_weather_data(mode = 'current')  
-        placeholder = st.empty()
-        with placeholder.container():
-            _show_current_weather_data(current_data)
-        time.sleep(20)
-        placeholder.empty()
+while True:
+    current_data = _get_current_weather_data(mode = 'current')  
+    placeholder = st.empty()
+    with placeholder.container():
+        _show_current_weather_data(current_data)
+    time.sleep(20)
+    placeholder.empty()
