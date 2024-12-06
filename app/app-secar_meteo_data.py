@@ -23,4 +23,4 @@ page_names_to_funcs = {
 }
 
 demo_name = st.sidebar.selectbox("Choose a page", page_names_to_funcs.keys())
-page_names_to_funcs[demo_name]()
+page_names_to_funcs[demo_name]
