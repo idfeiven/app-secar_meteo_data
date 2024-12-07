@@ -1,11 +1,11 @@
-import streamlit as st
+import requests
 import pandas as pd
+import streamlit as st
 import plotly.express as px
 import matplotlib.pyplot as plt
-import requests
 
 
-def __get_url_api_wu(mode): #set mode. Accepts current, daily
+def _get_url_api_wu(mode): #set mode. Accepts current, daily
     station_id = 'IPALMA141' #select a station id from Weather Underground
     api_key = 'd4a43e6d3abf4b17a43e6d3abfdb1772' #introduce your api key        
     if mode == 'current':
@@ -16,14 +16,14 @@ def __get_url_api_wu(mode): #set mode. Accepts current, daily
     return(url_pws)
 
 
-def _select_column_box(data, key):
+def select_column_box(data, key):
     # Seleccionar una variable del dataset
     column = st.selectbox("Select a variable to plot", data.columns, key = key)
     return column
 
-def _get_current_weather_data(mode): #set mode. Accepts current, daily
+def get_current_weather_data(mode): #set mode. Accepts current, daily
 
-    url_pws = __get_url_api_wu(mode = mode)            
+    url_pws = _get_url_api_wu(mode = mode)            
     response = requests.get(url_pws)
 
     if response.status_code == 200:
@@ -35,7 +35,7 @@ def _get_current_weather_data(mode): #set mode. Accepts current, daily
         return pd.DataFrame()
 
 
-def _get_daily_summary(today_data):
+def get_daily_summary(today_data):
 
     daily_mins = today_data.resample('1D').min()[['temperature_deg_min', 'humidity_perc_min',
                                                  'wind_gust_kmh', 'heat_index_deg',
@@ -75,7 +75,7 @@ def _get_daily_summary(today_data):
     return daily_summary        
 
 
-def _parse_today_data(today_data):
+def parse_today_data(today_data):
     today_data = today_data[['obsTimeLocal', 'humidityAvg', 'humidityHigh', 'humidityLow',
                              'metric.tempHigh', 'metric.tempLow', 'metric.tempAvg', 
                              'metric.windspeedAvg', 'metric.heatindexAvg', 'metric.pressureMin',
@@ -97,14 +97,14 @@ def _parse_today_data(today_data):
     return today_data
 
 
-def _plot_interactive_current(data_current, column):
+def plot_interactive_current(data_current, column):
     #Crear gráfico de una variable del dataset para el año 2024
     st.write(f"Interactive daily evolution plot for {column}")
     fig = px.line(data_current, x=data_current.index, y=f"{column}")
     st.plotly_chart(fig)
 
 
-def _plot_static_current(data_current, column):
+def plot_static_current(data_current, column):
     st.write(f"Static daily evolution plot for {column}")
 
     fig, ax = plt.subplots()
@@ -120,19 +120,19 @@ st.markdown("# Palma Secar de la Real daily summary")
 
 st.write("Data is updated every 5 minutes. Refresh the page to update.")
 
-today_data = _get_current_weather_data(mode = 'daily')
+today_data = get_current_weather_data(mode = 'daily')
 if not(today_data.empty):
-    today_data = _parse_today_data(today_data)
+    today_data = parse_today_data(today_data)
     
 
-    daily_summary = _get_daily_summary(today_data)
+    daily_summary = get_daily_summary(today_data)
     st.markdown(f'## Daily summary for {today_data.index[0].date()}')
     st.dataframe(daily_summary)
 
     st.markdown('## 5 minute data plots')
-    column = _select_column_box(today_data, key = "temperature_deg")
-    _plot_interactive_current(today_data, column)
-    _plot_static_current(today_data, column)
+    column = select_column_box(today_data, key = "temperature_deg")
+    plot_interactive_current(today_data, column)
+    plot_static_current(today_data, column)
 
     st.markdown("## 5 minute data in table")
     st.dataframe(today_data)

@@ -1,10 +1,10 @@
-import streamlit as st
+import time
 import requests
 import pandas as pd
-import time
+import streamlit as st
 
 
-def __get_url_api_wu(mode): #set mode. Accepts current, daily
+def _get_url_api_wu(mode): #set mode. Accepts current, daily
     station_id = 'IPALMA141' #select a station id from Weather Underground
     api_key = 'd4a43e6d3abf4b17a43e6d3abfdb1772' #introduce your api key        
     if mode == 'current':
@@ -15,9 +15,9 @@ def __get_url_api_wu(mode): #set mode. Accepts current, daily
     return(url_pws)
 
 
-def _get_current_weather_data(mode): #set mode. Accepts current, daily
+def get_current_weather_data(mode): #set mode. Accepts current, daily
 
-    url_pws = __get_url_api_wu(mode = mode)            
+    url_pws = _get_url_api_wu(mode = mode)            
     response = requests.get(url_pws)
 
     if response.status_code == 200:
@@ -29,7 +29,7 @@ def _get_current_weather_data(mode): #set mode. Accepts current, daily
         return pd.DataFrame()
 
 
-def _show_current_weather_data(current_data):
+def show_current_weather_data(current_data):
     if not(current_data.empty):
         st.write(f"Last observation: {current_data['obsTimeLocal'][0]}")
         col1, col2, col3 = st.columns(3) #create 3 columns
@@ -49,9 +49,9 @@ st.markdown("## Current conditions")
 st.write("Data taken from Wunderground web API. Update interval: 20 seconds")
 
 while True:
-    current_data = _get_current_weather_data(mode = 'current')  
+    current_data = get_current_weather_data(mode = 'current')  
     placeholder = st.empty()
     with placeholder.container():
-        _show_current_weather_data(current_data)
+        show_current_weather_data(current_data)
     time.sleep(20)
     placeholder.empty()

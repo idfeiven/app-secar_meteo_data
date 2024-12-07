@@ -20,10 +20,10 @@ pg = st.navigation([homepage,
                     current_conditions_page,
                     daily_summary_page,
                     recent_data_page,
-                    # historical_data_page,
-                    # annual_comparison_page,
-                    # statistics_page,
-                    # extreme_data_page,
+                    historical_data_page,
+                    annual_comparison_page,
+                    statistics_page,
+                    extreme_data_page,
                     ]
                   )
 
