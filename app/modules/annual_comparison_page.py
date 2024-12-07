@@ -176,6 +176,47 @@ def plot_sensor_comparison_daily_data_pcp_current_year(daily_data):
     st.pyplot(fig)
 
 
+def plot_daily_data_wind_speed(daily_data):
+    year_min = 2021
+    max_year = daily_data.date.max().year
+    years = np.arange(year_min, max_year + 1, 1)
+    fig, axs = plt.subplots(nrows = 2, ncols = 1, figsize = (16,12))
+    plt.suptitle('Estación meteorológica Secar de la Real (Palma, España) \n Datos diarios. Elevación: 75 m \n', fontsize = 16, fontweight = 'bold')
+
+    for year in years:
+        daily_data_year = daily_data[daily_data['date'].dt.year == year]
+        daily_data_year = daily_data_year.copy()
+        daily_data_year['date'] = daily_data_year['date'].dt.strftime('%m-%d')
+        # daily_data_year.set_index('date', inplace = True)
+        
+        daily_data_year.plot('date', 'wind_speed_kmh', ax = axs[0], legend = True, label = year)    
+        daily_data_year.plot('date', 'wind_gust_kmh', ax = axs[1], legend = True, label = year)    
+
+    axs[0].set_title('Velocidad media diaria', fontsize = 12)
+    axs[0].set_title(f'Validez datos de viento: 2021-{str(max_year)}', fontsize = 9, loc = 'right')            
+    axs[0].set_ylabel('Velocidad media (km/h)')
+
+    axs[1].set_title('Racha máxima diaria', fontsize = 12)
+    axs[1].set_title(f'Validez datos de viento: 2021-{str(max_year)}', fontsize = 9, loc = 'right')            
+    axs[1].set_ylabel('Racha máxima (km/h)')
+    axs[1].legend()
+
+    plt.gca().set_ylim(bottom=0)
+
+    for ax in axs:
+        ax.grid()
+        # set monthly locator
+        ax.xaxis.set_major_locator(mdates.MonthLocator(interval=1))
+        # # set formatter
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%b'))
+
+    axs[0].margins(x = 0.0)
+    axs[1].margins(x = 0.0)
+
+    plt.tight_layout()
+    st.pyplot(fig)
+
+
 def plot_monthly_data_temp(monthly_data, monthly_data_means):
     year_min = 2021
     max_year = monthly_data.date.max().year
@@ -275,6 +316,9 @@ monthly_data_means = get_monthly_data_means(monthly_data)
 st.markdown("## Daily Precipitation")
 plot_daily_annual_comp_pcp(daily_data)
 plot_sensor_comparison_daily_data_pcp_current_year(daily_data)
+
+st.markdown("## Daily wind speed and gusts")
+plot_daily_data_wind_speed(daily_data)
 
 st.markdown("## Monthly Temperature")
 plot_monthly_data_temp(monthly_data, monthly_data_means)

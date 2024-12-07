@@ -2,8 +2,13 @@ import os
 import sys
 import streamlit as st
 
+# add necessary workspaces
+
 sys.path.append(os.path.join(os.path.dirname(__file__), "modules"))
-sys.path.append(os.path.join(os.path.dirname(__file__), "data"))
+
+# update the app 
+# before updating the app, upload new data_la_real.txt and secar_daily_data.xlsx
+# and run secar_meteo_data_analyzer.py
 
 homepage = st.Page("modules/homepage.py", title = "Home")
 current_conditions_page = st.Page("modules/current_conditions_page.py", title = "Current conditions")
