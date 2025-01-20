@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from common import load_10min_data,\
                    load_daily_data,\
                    select_column_box,\
-                   get_df_variable_description
+                   get_dict_rename_cols
 
 
 def get_wind_data(raw_data):
@@ -81,7 +81,8 @@ plot_interactive_wind_rose(wind_rose_data)
 st.markdown('## Histogram')
 st.write("Plot a histogram for a variable. Uses all available data")
 # Seleccionar una variable del dataset
-column = select_column_box(data, key = "high_temp_deg")
+data.rename(columns = get_dict_rename_cols(), inplace=True)
+column = select_column_box(data, key = data.columns[0])
 
 st.write(f"Interactive histogram of {column}. {len(data[column].dropna())} values were used.")
 plot_interactive_histogram(data, column)
@@ -90,6 +91,6 @@ st.write(f"Static histogram of {column}. {len(data[column].dropna())} values wer
 plot_static_histogram(data, column)
 
 #Añadir descripción de variables
-st.write("Variable description")
-df_var_descr = get_df_variable_description(data)
-df_var_descr
+# st.write("Variable description")
+# df_var_descr = get_df_variable_description(data)
+# df_var_descr

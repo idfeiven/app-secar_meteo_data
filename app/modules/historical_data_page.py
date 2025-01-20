@@ -7,8 +7,7 @@ import matplotlib.pyplot as plt
 from common import load_10min_data,\
                    load_daily_data,\
                    select_column_box,\
-                   get_df_variable_description\
-
+                   get_dict_rename_cols\
 
 
 def select_history_data_type(key = "Daily data"):
@@ -16,11 +15,13 @@ def select_history_data_type(key = "Daily data"):
     data_type = st.selectbox("Select data type to plot", ["10-min data", "Daily data"], key = key)
     if data_type == "Daily data":
         daily_data = load_daily_data()
+        daily_data.rename(columns = get_dict_rename_cols(), inplace=True)
         return daily_data
     elif data_type == "10-min data":
         raw_data = load_10min_data()
         raw_data['pcp (mm)'] = np.nan
         raw_data['daily_rain_mm'] = np.nan
+        raw_data.rename(columns = get_dict_rename_cols(), inplace=True)
         return raw_data
 
 
@@ -94,7 +95,7 @@ data_filter, dt_ini, dt_end = filter_data_by_date(data)
 # data_filter = data_filter.round(1)
 
 # Seleccionar una variable del dataset
-column = select_column_box(data, key = "temp_out_deg") # key parameter is used to prevent errors when displaying 
+column = select_column_box(data, key = data.columns[0]) # key parameter is used to prevent errors when displaying 
 
 st.write(f"Interactive daily evolution plot for {column}.\
         Period from {dt_ini.strftime('%d-%m-%Y')} to {dt_end.strftime('%d-%m-%Y')}")
@@ -108,12 +109,18 @@ plot_static_historical(data_filter, column)
 st.write("Data in table format for the selected period")
 
 # column-cmap mapping
-cmaps = {'pcp (mm)': 'Blues', 'high_temp_deg': 'jet',
-            'wind_gust_kmh': 'Greys', 'rain_10min_mm': 'Blues',
-            'rain_rate_mmh': 'Blues', 'low_temp_deg': 'jet',
-            'daily_rain_mm': 'Blues', 'temp_out_deg': 'jet',
-            'rel_humidity_perc': 'BuPu', 'dewpoint_deg': 'BuPu',
-            'wind_speed_kmh': 'Greys', 'pressure_hPa': 'PuRd'}
+cmaps = {'Daily Precipitation (manual rain gauge, mm)': 'Blues',
+        'Maximum Temperature (°C)': 'jet',
+        'Wind Gust (km/h)': 'Greys',
+        'Precipitation in 10 minutes (mm)': 'Blues',
+        'Instantaneous Rain Rate (mm/h)': 'Blues',
+        'Minimum Temperature (°C)': 'jet',
+        'Daily precipitation (weather station, mm)': 'Blues',
+        'Temperature (°C)': 'jet',
+        'Humidity (%)': 'BuPu',
+        'Dew Point (°C)': 'BuPu',
+        'Wind Speed (km/h)': 'Greys',
+        'Mean Sea Level Pressure (hPa)': 'PuRd'}
 # default gradient
 style = data_filter.style.background_gradient()
 for col, cmap in cmaps.items():
@@ -122,6 +129,6 @@ for col, cmap in cmaps.items():
 # st.data_editor(data_filter, column_config={"high_temp_deg": st.column_config.NumberColumn("Daily maximum temperature", format = "%.1f")})
 st.dataframe(style)
 #Añadir descripción de variables
-st.write("Variable description")
-df_var_descr = get_df_variable_description(data)
-df_var_descr
+# st.write("Variable description")
+# df_var_descr = get_df_variable_description(data)
+# df_var_descr

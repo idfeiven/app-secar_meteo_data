@@ -12,6 +12,25 @@ def select_column_box(data, key):
     return column
 
 
+def get_dict_rename_cols():
+
+    dict_rename_cols = {"pcp (mm)": "Daily Precipitation (manual rain gauge, mm)",
+                      "high_temp_deg": "Maximum Temperature (°C)",
+                      "wind_gust_kmh": "Wind Gust (km/h)",
+                      "wind_gust_dir": "Wind Gust Direction (°)",
+                      "rain_10min_mm": "Precipitation in 10 minutes (mm)",
+                      "rain_rate_mmh": "Instantaneous Rain Rate (mm/h)",
+                      "low_temp_deg": "Minimum Temperature (°C)",
+                      "daily_rain_mm": "Daily precipitation (weather station, mm)",
+                      "temp_out_deg": "Temperature (°C)",
+                      "rel_humidity_perc": "Humidity (%)",
+                      "dewpoint_deg": "Dew Point (°C)",
+                      "wind_speed_kmh": "Wind Speed (km/h)",
+                      "wind_direction": "Wind Direction (°)",
+                      "pressure_hPa": "Mean Sea Level Pressure (hPa)"}
+
+    return dict_rename_cols
+
 def get_df_variable_description(data):
     var_description = ["Daily accumulated precipitation from manual rain gauge",
                     "Daily maximum temperature in degrees Celsius",
