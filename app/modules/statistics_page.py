@@ -16,6 +16,7 @@ def get_wind_data(raw_data):
 
     return wind_data
 
+
 def get_df_wind_rose(wind_data):
     bins = np.arange(0.0, wind_data.wind_speed_kmh.max() + 5, 5)
     wind_data['10-min average wind speed (km/h)'] = pd.cut(wind_data['wind_speed_kmh'], bins)
@@ -23,6 +24,7 @@ def get_df_wind_rose(wind_data):
     wind_rose["frequency"] = wind_rose["wind_speed_kmh"]/len(wind_data)
 
     return wind_rose
+
 
 def plot_interactive_wind_rose(wind_rose):
 
@@ -89,6 +91,12 @@ plot_interactive_histogram(data, column)
 
 st.write(f"Static histogram of {column}. {len(data[column].dropna())} values were used.")
 plot_static_histogram(data, column)
+
+
+# Crear tabla de ránking diario
+st.markdown('## Daily Ranking')
+daily_ranking = get_daily_data_ranking(data)
+st.dataframe(daily_ranking)
 
 #Añadir descripción de variables
 # st.write("Variable description")
