@@ -3,7 +3,7 @@ import pandas as pd
 import streamlit as st
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
-from common import load_daily_data
+from common import load_daily_data, get_monthly_data
 
 
 def plot_daily_annual_comp_temp(daily_data):
@@ -52,7 +52,7 @@ def plot_daily_annual_comp_temp(daily_data):
     st.pyplot(fig)
 
 
-def get_monthly_data(daily_data):
+def get_monthly_data_for_plots(daily_data):
     #resample daily data to monthly data:
     max_monthly_data = daily_data.resample('ME').max()\
                         [['high_temp_deg', 'wind_gust_kmh', 'rain_10min_mm', 'rain_rate_mmh']]\
@@ -85,6 +85,7 @@ def get_monthly_data_means(monthly_data):
     monthly_data_means = monthly_data.groupby(monthly_data['date'].dt.strftime('%m')).mean()\
         .drop(['max_high_temp_deg', 'max_wind_gust_kmh', 'max_rain_10min_mm', 'max_rain_rate_mmh',
                 'min_low_temp_deg'], axis = 1).rename(columns = {'pcp_acum_month_mm': 'mean_pcp_acum_month_mm'})
+    
     return(monthly_data_means)
 
 
@@ -310,7 +311,7 @@ st.markdown("## Daily Temperature")
 
 daily_data = load_daily_data()
 plot_daily_annual_comp_temp(daily_data)
-monthly_data = get_monthly_data(daily_data)
+monthly_data = get_monthly_data_for_plots(daily_data)
 monthly_data_means = get_monthly_data_means(monthly_data)
 
 st.markdown("## Daily Precipitation")
@@ -325,3 +326,43 @@ plot_monthly_data_temp(monthly_data, monthly_data_means)
 
 st.markdown("## Monthly and yearly Precipitation")
 plot_monthly_yearly_data_pcp(monthly_data, monthly_data_means)
+
+st.markdown("## Monthly data in table")
+monthly_data.sort_values(by = "date", ascending = False, inplace=True)
+monthly_data["date"]= monthly_data["date"].dt.strftime("%Y-%m")
+monthly_data = monthly_data.round(2)
+
+monthly_data.rename(columns = {'date': "Year and month",
+                               'max_high_temp_deg': 'Monthly max. temperature (°C)',
+                               'max_wind_gust_kmh': 'Monthly max. wind gust (km/h)',
+                               'max_rain_10min_mm': 'Monthly max. rain in 10 minutes (mm)',
+                               'max_rain_rate_mmh': 'Monthly max. instantaneous rain rate (mm/h)',
+                               'mean_temp_out_deg': 'Monthly mean temperature (°C)',
+                               'min_low_temp_deg': "Monthly min. temperature (°C)",
+                               'pcp_acum_month_mm': "Monthly Precipitation (mm)",
+                               'mean_high_temp_deg': 'Monthly mean max. temperatures (°C)',
+                               'mean_low_temp_deg': 'Monthly mean min. temperatures (°C)',
+                               'mean_rel_humidity_perc': 'Monthly mean relative humidity (%)',
+                               'mean_dewpoint_deg': 'Monthly mean dewpoint (°C)',
+                               'mean_wind_speed_kmh': 'Monthly mean wind speed (km/h)',
+                               'mean_pressure_hPa': 'Monthly mean pressure (hPa)'}, inplace = True)
+monthly_data.set_index("Year and month", inplace = True)
+
+st.dataframe(monthly_data)
+
+st.markdown("## Monthly data means in table")
+monthly_data_means.drop("date", axis = 1, inplace=True)
+monthly_data_means.reset_index(inplace = True)
+monthly_data_means.rename(columns={"date": "Month"}, inplace=True)
+monthly_data_means.set_index("Month", inplace=True)
+monthly_data_means = monthly_data_means.round(2)
+
+monthly_data_means.rename(columns = {"mean_temp_out_deg": "Mean Temperature (°C)",
+                                        "mean_high_temp_deg": "Mean of Max Temperatures (°C)",
+                                        "mean_low_temp_deg": "Mean of Min Temperatures (°C)",
+                                        "mean_rel_humidity_perc": "Mean Relative Humidity (%)",
+                                        "mean_dewpoint_deg": "Mean Dewpoint Temperature (°C)",
+                                        "mean_wind_speed_kmh": "Mean Wind Speed (km/h)",
+                                        "mean_pressure_hPa": "Mean Sea Level Pressure (hPa)",
+                                        "mean_pcp_acum_month_mm": "Mean Precipitation (mm)"}, inplace=True)
+st.dataframe(monthly_data_means)
