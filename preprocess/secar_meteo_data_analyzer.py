@@ -108,31 +108,6 @@ def update_daily_data(daily_data):
     return(daily_data)
 
 
-def get_warm_nights_totals(daily_data):
-    n_tropical_nights = []
-    n_hot_nights = []
-    n_hell_nights = []
-
-    year_min = daily_data.date.min().year
-    max_year = daily_data.date.max().year
-    years = np.arange(year_min, max_year + 1, 1)
-
-    for year in years:
-        daily_data_year = daily_data[ daily_data.date.dt.year == year ]
-        n_tropical_nights.append( len(daily_data_year[ daily_data_year['low_temp_deg'] >=20.0 ]) )
-        n_hot_nights.append( len(daily_data_year[ daily_data_year['low_temp_deg'] >=25.0 ]) )
-        n_hell_nights.append( len(daily_data_year[ daily_data_year['low_temp_deg'] >=30.0 ]) )   
-
-    n_tropical_nights = pd.DataFrame(n_tropical_nights, columns = ['n_days_tmin_gt_20_deg'])
-    n_hot_nights = pd.DataFrame(n_hot_nights, columns = ['n_days_tmin_gt_25_deg'])
-    n_hell_nights = pd.DataFrame(n_hell_nights, columns = ['n_days_tmin_gt_30_deg'])
-    years = pd.DataFrame(years, columns = ['year'])
-
-    n_nights_classific = pd.concat([years, n_tropical_nights, n_hot_nights, n_hell_nights], axis = 1)
-    n_nights_classific.to_excel(Path(__file__).parent.parent /"data" / "nights_classif.xlsx")
-    return(n_nights_classific)
-
-
 def calculate_mean_rel_err_pcp_measures(daily_data):
     pcp_data = daily_data[daily_data['pcp (mm)'] > 0.0].dropna()
     y_data = pcp_data['pcp (mm)'].to_numpy()
@@ -163,6 +138,3 @@ daily_data = get_daily_data(data_parsed)
 
 print('Actualizando datos diarios...')
 daily_data = update_daily_data(daily_data)
-
-print('Calculando número de noches tropicales, tórridas e infernales')
-n_nights_classific = get_warm_nights_totals(daily_data)

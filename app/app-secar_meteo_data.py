@@ -18,7 +18,7 @@ historical_data_page = st.Page("modules/historical_data_page.py", title = "Histo
 annual_comparison_page = st.Page("modules/annual_comparison_page.py", title = "Annual comparison page")
 statistics_page = st.Page("modules/statistics_page.py", title = "Statistics")
 extreme_data_page = st.Page("modules/extreme_data_page.py", title = "Data extremes")
-
+indicators_page = st.Page("modules/indicators_page.py", title = "Indicators")
 # for multiple pages in one category, define a dictionary
 
 pg = st.navigation([homepage,
@@ -29,6 +29,7 @@ pg = st.navigation([homepage,
                     annual_comparison_page,
                     statistics_page,
                     extreme_data_page,
+                    indicators_page
                     ]
                   )
 
