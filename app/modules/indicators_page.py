@@ -30,10 +30,11 @@ def get_warm_nights_totals(daily_data):
 
     n_nights_classific = pd.concat([years, n_df_warm_nights, n_hot_nights, n_hell_nights], axis = 1)
     
-    n_nights_classific.rename(columns={"n_days_tmin_gt_20_deg": "Number of Tropical Nights",
-                                       "n_days_tmin_gt_25_deg": "Number of Scorching Nights",
-                                       "n_days_tmin_gt_30_deg": "Number of Infernal Nights"}, inplace=True)
+    n_nights_classific.rename(columns={"n_days_tmin_gt_20_deg": "Number of days with minimum temperature >= 20 °C",
+                                       "n_days_tmin_gt_25_deg": "Number of days with minimum temperature >= 25 °C",
+                                       "n_days_tmin_gt_30_deg": "Number of days with minimum temperature >= 30 °C"}, inplace=True)
     n_nights_classific.set_index("year", inplace=True)
+    n_nights_classific = n_nights_classific[n_nights_classific.index >= 2021]
 
     return n_nights_classific
 
@@ -46,15 +47,15 @@ def get_warm_nights_cumsum(daily_data, thres):
         
     if thres == 20.0:
         df_warm_nights_cumsum = pd.DataFrame()
-        col_name = "Cumulative Tropical Nights"
+        col_name = "Total number of days with minimum temperature >= 20 °C"
 
     if thres == 25.0:
         df_warm_nights_cumsum = pd.DataFrame()
-        col_name = "Cumulative Scorching Nights"
+        col_name = "Total number of days with minimum temperature >= 25 °C"
 
     if thres == 30.0:
         df_warm_nights_cumsum = pd.DataFrame()
-        col_name = "Cumulative Infernal Nights"
+        col_name = "Total number of days with minimum temperature >= 30 °C"
 
     for year in years:
 
@@ -92,27 +93,31 @@ def plot_daily_annual_warm_nights(df_warm_nights, n_nights_classific, night_type
                  fontsize = 16,
                  fontweight = 'bold')
 
-    if night_type == "Cumulative Tropical Nights":
-        max_val = n_nights_classific.max()["Number of Tropical Nights"]
-    if night_type == "Cumulative Scorching Nights":
-        max_val = n_nights_classific.max()["Number of Scorching Nights"]
-    if night_type == "Cumulative Infernal Nights":
-        max_val = n_nights_classific.max()["Number of Infernal Nights"]
+    if night_type == "tropical":
+        max_val = n_nights_classific.max()["Number of days with minimum temperature >= 20 °C"]
+        col_cumsum = "Total number of days with minimum temperature >= 20 °C"
+
+    if night_type == "scorching":
+        max_val = n_nights_classific.max()["Number of days with minimum temperature >= 25 °C"]
+        col_cumsum = "Total number of days with minimum temperature >= 25 °C"
+
+    if night_type == "infernal":
+        max_val = n_nights_classific.max()["Number of days with minimum temperature >= 30 °C"]
+        col_cumsum = "Total number of days with minimum temperature >= 30 °C"
 
     for year in years:
         df_warm_nights_year = df_warm_nights[df_warm_nights['date'].dt.year == year]
         df_warm_nights_year = df_warm_nights_year.copy()
         df_warm_nights_year['dates'] = df_warm_nights_year['date'].dt.strftime('%m-%d')       
-        df_warm_nights_year.plot('dates', night_type, ax = axs, label = year)
+        df_warm_nights_year.plot('dates', col_cumsum, ax = axs, label = year)
 
-    axs.set_title(night_type, fontsize = 12)
-    axs.set_title(f'Validez datos de temperatura: 2021-{str(max_year)}', fontsize = 7, loc = 'right')        
-    axs.set_ylabel(night_type)
+    axs.set_title(col_cumsum, fontsize = 12)
+    axs.set_ylabel(col_cumsum)
     axs.set_ylim([0, max_val + 5])
 
-    if night_type == "Cumulative Tropical Nights":
+    if night_type == "tropical":
         axs.set_yticks(np.arange(0, max_val + 5, 5))
-    if night_type == "Cumulative Scorching Nights" or night_type == "Cumulative Infernal Nights":
+    if night_type == "scorching" or night_type == "infernal":
         axs.set_yticks(np.arange(0, max_val + 1, 1))
 
     axs.grid()
@@ -132,7 +137,7 @@ st.write('In this page you will find different climate indicators')
 
 daily_data = load_daily_data()
 
-st.markdown('## Tropical nights')
+st.markdown('## Number of days with minimum temperature reaching different warm thresholds')
 n_nights_classific = get_warm_nights_totals(daily_data)
 df_tropical_nights = get_warm_nights_cumsum(daily_data, thres = 20.0)
 df_scorching_nights = get_warm_nights_cumsum(daily_data, thres = 25.0)
@@ -145,6 +150,6 @@ st.markdown('## Annual number of warm nights')
 plot_interactive_current(n_nights_classific, column = col)
 
 st.markdown('## Accumulated warm nights')
-plot_daily_annual_warm_nights(df_tropical_nights, n_nights_classific, night_type = "Cumulative Tropical Nights")
-plot_daily_annual_warm_nights(df_scorching_nights, n_nights_classific, night_type = "Cumulative Scorching Nights")
-plot_daily_annual_warm_nights(df_infernal_nights, n_nights_classific, night_type = "Cumulative Infernal Nights")
+plot_daily_annual_warm_nights(df_tropical_nights, n_nights_classific, night_type = "tropical")
+plot_daily_annual_warm_nights(df_scorching_nights, n_nights_classific, night_type = "scorching")
+plot_daily_annual_warm_nights(df_infernal_nights, n_nights_classific, night_type = "infernal")
