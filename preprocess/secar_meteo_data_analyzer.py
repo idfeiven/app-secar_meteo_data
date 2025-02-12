@@ -46,8 +46,8 @@ cols_data_abs = ['high_temp_deg', 'wind_gust_kmh', 'low_temp_deg', 'temp_out_deg
 def get_path_data():
     #we read all the files creating a searching criteria and a list of all of them
     path = Path(__file__).parent.parent / "data" / "data_la_real.txt"
-    path_daily_data = Path(__file__).parent.parent / "data" / "secar_daily_data.xlsx"
-    return(path, path_daily_data)
+    path_manual_pcp_data = Path(__file__).parent.parent / "data" / "daily_manual_rain_gage_data.xlsx"
+    return(path, path_manual_pcp_data)
 
 
 def parse_meteo_data(path):
@@ -86,24 +86,29 @@ def parse_meteo_data(path):
 
 def get_daily_data(data_parsed):
     #resample 10-min data to daily data:
-    max_daily_data = data_parsed.drop(["wind_direction", "wind_gust_dir"], axis = 1).set_index('date').resample('D').max()[['high_temp_deg', 'wind_gust_kmh', 'rain_10min_mm', 'rain_rate_mmh', 'pressure_hPa']]
-    min_daily_data = data_parsed.drop(["wind_direction", "wind_gust_dir"], axis = 1).set_index('date').resample('D').min()[['low_temp_deg', 'pressure_hPa']]
+    max_daily_data = data_parsed.drop(["wind_direction", "wind_gust_dir"], axis = 1).set_index('date').resample('D').max()[['high_temp_deg', 'wind_gust_kmh', 'rain_10min_mm', 'rain_rate_mmh', 'pressure_hPa', 'rel_humidity_perc']]
+    max_daily_data.rename(columns = {"pressure_hPa": "max_pressure_hPa", "rel_humidity_perc": "max_rel_humidity_perc"}, inplace=True)
+
+    min_daily_data = data_parsed.drop(["wind_direction", "wind_gust_dir"], axis = 1).set_index('date').resample('D').min()[['low_temp_deg', 'pressure_hPa', 'rel_humidity_perc']]
+    min_daily_data.rename(columns = {"pressure_hPa": "min_pressure_hPa", "rel_humidity_perc": "min_rel_humidity_perc"}, inplace=True)
+
     mean_daily_data = data_parsed.drop(["wind_direction", "wind_gust_dir"], axis = 1).set_index('date').resample('D').mean()[['temp_out_deg', 'rel_humidity_perc', 'dewpoint_deg', 'wind_speed_kmh', 'pressure_hPa']]
+    mean_daily_data.rename(columns = {"pressure_hPa": "mean_pressure_hPa", "rel_humidity_perc": "mean_rel_humidity_perc"}, inplace=True)
+
     daily_pcp_data_stn = data_parsed.drop(["wind_direction", "wind_gust_dir"], axis = 1).set_index('date').resample('D').sum()[['rain_10min_mm']].rename(columns = {'rain_10min_mm': 'daily_rain_mm'})
     
     #group all daily data
     daily_data = pd.concat([max_daily_data, min_daily_data, daily_pcp_data_stn, mean_daily_data], axis = 1)
     daily_data = daily_data.reset_index()
+    daily_data = daily_data.round(1)
 
     return(daily_data)
 
 
 def update_daily_data(daily_data):
-    daily_data_old = pd.read_excel(path_daily_data)
-    daily_data_old.drop(['Unnamed: 0'], axis = 1, inplace=True)
-    daily_data = daily_data_old.merge(daily_data, how = 'left', on = 'date')
-    daily_data = daily_data[daily_data.columns.drop(list(daily_data.filter(regex='x')))]
-    daily_data.columns = daily_data_old.columns
+    manual_pcp_data = pd.read_excel(path_manual_pcp_data)
+    manual_pcp_data.drop(['Unnamed: 0'], axis = 1, inplace=True)
+    daily_data = manual_pcp_data.merge(daily_data, how = 'left', on = 'date')
     daily_data.to_excel(Path(__file__).parent.parent / "data" / "secar_daily_data.xlsx")
     return(daily_data)
 
@@ -113,19 +118,19 @@ def calculate_mean_rel_err_pcp_measures(daily_data):
     y_data = pcp_data['pcp (mm)'].to_numpy()
     x_data = pcp_data['daily_rain_mm'].to_numpy()
     rel_err = (y_data - x_data)/x_data*100.0
-    rel_err = pd.DataFrame(rel_err, columns = {'Relative error %'})
+    rel_err = pd.DataFrame(rel_err, columns = ['Relative error %'])
     rel_err.replace(np.inf, np.nan, inplace=True)
     rel_err.dropna(inplace=True)
     print(f'Analizados {len(rel_err)} eventos de precipitación')
-    print(f'Error medio (%) cometido en medidas de precipitación: {rel_err.mean()}')
-    print(f'Error mínimo (%) cometido en medidas de precipitación: {rel_err.min()}')
-    print(f'Error máximo (%) cometido en medidas de precipitación: {rel_err.max()}')
+    print(f'Error medio (%) cometido en medidas de precipitación: {rel_err.mean().round(2).values[0]}')
+    print(f'Error mínimo (%) cometido en medidas de precipitación: {rel_err.min().round(2).values[0]}')
+    print(f'Error máximo (%) cometido en medidas de precipitación: {rel_err.max().round(2).values[0]}')
     return(rel_err)
 
 
 #--------------------------------MAIN PROGRAM----------------------------------------
 print('Recopilando datos...')
-path, path_daily_data = get_path_data()
+path, path_manual_pcp_data = get_path_data()
 
 print('Organizando datos...')
 data_parsed = parse_meteo_data(path)
@@ -138,3 +143,6 @@ daily_data = get_daily_data(data_parsed)
 
 print('Actualizando datos diarios...')
 daily_data = update_daily_data(daily_data)
+
+print('Analizando datos de precipitación diarios')
+rel_err = calculate_mean_rel_err_pcp_measures(daily_data)

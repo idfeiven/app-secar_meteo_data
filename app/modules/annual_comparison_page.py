@@ -65,14 +65,14 @@ def get_monthly_data_for_plots(daily_data):
         .rename(columns= {'low_temp_deg': 'min_low_temp_deg'})
 
     mean_monthly_data = daily_data\
-        .resample('ME').mean()[['temp_out_deg', 'high_temp_deg', 'low_temp_deg' ,'rel_humidity_perc', 'dewpoint_deg', 'wind_speed_kmh', 'pressure_hPa']]\
+        .resample('ME').mean()[['temp_out_deg', 'high_temp_deg', 'low_temp_deg' ,'rel_humidity_perc', 'dewpoint_deg', 'wind_speed_kmh', 'mean_pressure_hPa']]\
         .rename(columns={'temp_out_deg': 'mean_temp_out_deg',
                          'high_temp_deg': 'mean_high_temp_deg',
                          'low_temp_deg': 'mean_low_temp_deg',
                          'rel_humidity_perc': 'mean_rel_humidity_perc',
                          'dewpoint_deg': 'mean_dewpoint_deg',
                          'wind_speed_kmh': 'mean_wind_speed_kmh',
-                         'pressure_hPa': 'mean_pressure_hPa'})
+                         'mean_pressure_hPa': 'mean_pressure_hPa'})
 
     monthly_pcp_data = daily_data.resample('ME').sum()[['pcp (mm)']]
     #group all monthly data

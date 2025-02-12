@@ -23,11 +23,15 @@ def get_dict_rename_cols():
                       "low_temp_deg": "Minimum Temperature (°C)",
                       "daily_rain_mm": "Daily precipitation (weather station, mm)",
                       "temp_out_deg": "Temperature (°C)",
-                      "rel_humidity_perc": "Humidity (%)",
+                      "mean_rel_humidity_perc": "Mean Humidity (%)",
+                      "max_rel_humidity_perc": "Maximum Humidity (%)",
+                      "min_rel_humidity_perc": "Minimum Humidity (%)",
                       "dewpoint_deg": "Dew Point (°C)",
                       "wind_speed_kmh": "Wind Speed (km/h)",
                       "wind_direction": "Wind Direction (°)",
-                      "pressure_hPa": "Mean Sea Level Pressure (hPa)"}
+                      "mean_pressure_hPa": "Mean Sea Level Pressure (hPa)",
+                      "max_pressure_hPa": "Maximum Sea Level Pressure (hPa)",
+                      "min_pressure_hPa": "Minimum Sea Level Pressure (hPa)"}
 
     return dict_rename_cols
 
@@ -120,14 +124,14 @@ def get_monthly_data(daily_data):
         .rename(columns= {'low_temp_deg': 'Monthly min. temperature (°C)'})
 
     mean_monthly_data = daily_data\
-        .resample('ME').mean()[['temp_out_deg', 'high_temp_deg', 'low_temp_deg' ,'rel_humidity_perc', 'dewpoint_deg', 'wind_speed_kmh', 'pressure_hPa']]\
+        .resample('ME').mean()[['temp_out_deg', 'high_temp_deg', 'low_temp_deg' ,'rel_humidity_perc', 'dewpoint_deg', 'wind_speed_kmh', 'mean_pressure_hPa']]\
         .rename(columns={'temp_out_deg': 'Monthly mean temperature (°C)',
                          'high_temp_deg': 'Monthly mean max. temperatures (°C)',
                          'low_temp_deg': 'Monthly mean min. temperatures (°C)',
                          'rel_humidity_perc': 'Monthly mean relative humidity (%)',
                          'dewpoint_deg': 'Monthly mean dewpoint (°C)',
                          'wind_speed_kmh': 'Monthly mean wind speed (km/h)',
-                         'pressure_hPa': 'Monthly mean pressure (hPa)'})
+                         'mean_pressure_hPa': 'Monthly mean pressure (hPa)'})
 
     monthly_pcp_data = daily_data.resample('ME').sum()[['pcp (mm)']]
     #group all monthly data
