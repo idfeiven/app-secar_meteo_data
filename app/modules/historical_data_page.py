@@ -16,13 +16,14 @@ def select_history_data_type(key = "Daily data"):
     if data_type == "Daily data":
         daily_data = load_daily_data()
         daily_data.rename(columns = get_dict_rename_cols(), inplace=True)
-        return daily_data
+        return daily_data, data_type
+    
     elif data_type == "10-min data":
         raw_data = load_10min_data()
         raw_data['pcp (mm)'] = np.nan
         raw_data['daily_rain_mm'] = np.nan
         raw_data.rename(columns = get_dict_rename_cols(), inplace=True)
-        return raw_data
+        return raw_data, data_type
 
 
 def filter_data_by_date(data):
@@ -87,7 +88,7 @@ st.markdown('## Time series data')
 st.write("Select type of data")      
 
 #Seleccionar un período de tiempo y representar período de tiempo
-data = select_history_data_type(key = "Daily data")
+data, data_type = select_history_data_type(key = "Daily data")
 # data = _load_daily_data()
 st.write("Select a time period")      
 
@@ -109,7 +110,7 @@ plot_static_historical(data_filter, column)
 st.write("Data in table format for the selected period")
 
 # column-cmap mapping
-cmaps = {'Daily Precipitation (manual rain gauge, mm)': 'Blues',
+cmaps_daily = {'Daily Precipitation (manual rain gauge, mm)': 'Blues',
         'Maximum Temperature (°C)': 'jet',
         'Wind Gust (km/h)': 'Greys',
         'Precipitation in 10 minutes (mm)': 'Blues',
@@ -117,12 +118,35 @@ cmaps = {'Daily Precipitation (manual rain gauge, mm)': 'Blues',
         'Minimum Temperature (°C)': 'jet',
         'Daily precipitation (weather station, mm)': 'Blues',
         'Temperature (°C)': 'jet',
+        'Mean Humidity (%)': 'BuPu',
+        'Maximum Humidity (%)': 'BuPu',
+        'Minimum Humidity (%)': 'BuPu',
+        'Dew Point (°C)': 'BuPu',
+        'Wind Speed (km/h)': 'Greys',
+        'Mean Sea Level Pressure (hPa)': 'PuRd',
+        'Maximum Sea Level Pressure (hPa)': 'PuRd',
+        'Minimum Sea Level Pressure (hPa)': 'PuRd'}
+
+cmaps_10min = {
+        'Maximum Temperature (°C)': 'jet',
+        'Wind Gust (km/h)': 'Greys',
+        'Precipitation in 10 minutes (mm)': 'Blues',
+        'Instantaneous Rain Rate (mm/h)': 'Blues',
+        'Minimum Temperature (°C)': 'jet',
+        'Temperature (°C)': 'jet',
         'Humidity (%)': 'BuPu',
         'Dew Point (°C)': 'BuPu',
         'Wind Speed (km/h)': 'Greys',
-        'Mean Sea Level Pressure (hPa)': 'PuRd'}
+        'Sea Level Pressure (hPa)': 'PuRd'}
+
 # default gradient
 style = data_filter.style.background_gradient()
+
+if data_type == "Daily data":
+    cmaps = cmaps_daily
+if data_type == "10-min data":
+    cmaps = cmaps_10min
+
 for col, cmap in cmaps.items():
     style = style.background_gradient(cmap, subset=col)
 

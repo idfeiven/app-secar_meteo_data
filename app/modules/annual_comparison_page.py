@@ -52,6 +52,98 @@ def plot_daily_annual_comp_temp(daily_data):
     st.pyplot(fig)
 
 
+def plot_daily_annual_comp_hum(daily_data):
+    daily_data = daily_data.reset_index()
+    year_min = 2021
+    max_year = daily_data.date.max().year
+    years = np.arange(year_min, max_year + 1, 1)
+    fig, axs = plt.subplots(nrows = 3, ncols = 1, figsize = (12,16))
+    plt.suptitle('Estación meteorológica Secar de la Real (Palma, España) \n Datos diarios. Elevación: 75 m \n', fontsize = 16, fontweight = 'bold')
+
+    # dates = daily_data[daily_data['date'].dt.year == 2022]['date'].dt.strftime('%m-%d')
+
+    for year in years:
+        daily_data_year = daily_data[daily_data['date'].dt.year == year]
+        daily_data_year = daily_data_year.copy()
+        daily_data_year['dates'] = daily_data_year['date'].dt.strftime('%m-%d')
+        # daily_data_year.set_index('date', inplace = True)
+        
+        daily_data_year.plot('dates', 'max_rel_humidity_perc', ax = axs[0], label = year)
+        daily_data_year.plot('dates', 'min_rel_humidity_perc', ax = axs[1], label = year)
+        daily_data_year.plot('dates', 'mean_rel_humidity_perc', ax = axs[2], label = year)    
+
+    axs[0].set_title('Humedad máxima diaria', fontsize = 12)
+    axs[0].set_title(f'Validez datos de humedad: 2021-{str(max_year)}', fontsize = 9, loc = 'right')        
+    axs[0].set_ylabel('T (°C)')
+    # axs[0].set_xlim([dates.min(), dates.max()])
+
+    axs[1].set_title('Humedad mínima diaria', fontsize = 12)
+    axs[1].set_ylabel('T (°C)')
+    # axs[1].set_xlim([dates.min(), dates.max()])
+
+    axs[2].set_title('Humedad media diaria', fontsize = 12)
+    axs[2].set_ylabel('T (°C)')
+    # axs[2].set_xlim([dates.min(), dates.max()])
+
+    for ax in axs:
+        ax.grid()
+        # set monthly locator
+        ax.xaxis.set_major_locator(mdates.MonthLocator(interval=1))
+        # set formatter
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%b'))
+
+        ax.margins(x = 0.0)
+
+    plt.tight_layout()
+    st.pyplot(fig)
+
+
+def plot_daily_annual_comp_pres(daily_data):
+    daily_data = daily_data.reset_index()
+    year_min = 2021
+    max_year = daily_data.date.max().year
+    years = np.arange(year_min, max_year + 1, 1)
+    fig, axs = plt.subplots(nrows = 3, ncols = 1, figsize = (12,16))
+    plt.suptitle('Estación meteorológica Secar de la Real (Palma, España) \n Datos diarios. Elevación: 75 m \n', fontsize = 16, fontweight = 'bold')
+
+    # dates = daily_data[daily_data['date'].dt.year == 2022]['date'].dt.strftime('%m-%d')
+
+    for year in years:
+        daily_data_year = daily_data[daily_data['date'].dt.year == year]
+        daily_data_year = daily_data_year.copy()
+        daily_data_year['dates'] = daily_data_year['date'].dt.strftime('%m-%d')
+        # daily_data_year.set_index('date', inplace = True)
+        
+        daily_data_year.plot('dates', 'max_pressure_hPa', ax = axs[0], label = year)
+        daily_data_year.plot('dates', 'min_pressure_hPa', ax = axs[1], label = year)
+        daily_data_year.plot('dates', 'mean_pressure_hPa', ax = axs[2], label = year)    
+
+    axs[0].set_title('Presión al nivel del mar máxima diaria', fontsize = 12)
+    axs[0].set_title(f'Validez datos de presión: 2021-{str(max_year)}', fontsize = 9, loc = 'right')        
+    axs[0].set_ylabel('T (°C)')
+    # axs[0].set_xlim([dates.min(), dates.max()])
+
+    axs[1].set_title('Presión al nivel del mar mínima diaria', fontsize = 12)
+    axs[1].set_ylabel('T (°C)')
+    # axs[1].set_xlim([dates.min(), dates.max()])
+
+    axs[2].set_title('Presión al nivel del mar media diaria', fontsize = 12)
+    axs[2].set_ylabel('T (°C)')
+    # axs[2].set_xlim([dates.min(), dates.max()])
+
+    for ax in axs:
+        ax.grid()
+        # set monthly locator
+        ax.xaxis.set_major_locator(mdates.MonthLocator(interval=1))
+        # set formatter
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%b'))
+
+        ax.margins(x = 0.0)
+
+    plt.tight_layout()
+    st.pyplot(fig)
+
+
 def get_monthly_data_for_plots(daily_data):
     #resample daily data to monthly data:
     max_monthly_data = daily_data.resample('ME').max()\
@@ -65,11 +157,10 @@ def get_monthly_data_for_plots(daily_data):
         .rename(columns= {'low_temp_deg': 'min_low_temp_deg'})
 
     mean_monthly_data = daily_data\
-        .resample('ME').mean()[['temp_out_deg', 'high_temp_deg', 'low_temp_deg' ,'rel_humidity_perc', 'dewpoint_deg', 'wind_speed_kmh', 'mean_pressure_hPa']]\
+        .resample('ME').mean()[['temp_out_deg', 'high_temp_deg', 'low_temp_deg' ,'mean_rel_humidity_perc', 'dewpoint_deg', 'wind_speed_kmh', 'mean_pressure_hPa']]\
         .rename(columns={'temp_out_deg': 'mean_temp_out_deg',
                          'high_temp_deg': 'mean_high_temp_deg',
                          'low_temp_deg': 'mean_low_temp_deg',
-                         'rel_humidity_perc': 'mean_rel_humidity_perc',
                          'dewpoint_deg': 'mean_dewpoint_deg',
                          'wind_speed_kmh': 'mean_wind_speed_kmh',
                          'mean_pressure_hPa': 'mean_pressure_hPa'})
@@ -307,12 +398,16 @@ st.text("Please note that there are 2 precipitation series: one with manual \n \
     records and the other with data from the automatic weather station. \n \
     The plotted data showed here are the precipitation from manual rain gauge.")
 
-st.markdown("## Daily Temperature")
-
+# get the data
 daily_data = load_daily_data()
-plot_daily_annual_comp_temp(daily_data)
 monthly_data = get_monthly_data_for_plots(daily_data)
 monthly_data_means = get_monthly_data_means(monthly_data)
+
+st.markdown("## Daily Temperature")
+plot_daily_annual_comp_temp(daily_data)
+
+st.markdown("## Daily Humidity")
+plot_daily_annual_comp_hum(daily_data)
 
 st.markdown("## Daily Precipitation")
 plot_daily_annual_comp_pcp(daily_data)
@@ -320,6 +415,9 @@ plot_sensor_comparison_daily_data_pcp_current_year(daily_data)
 
 st.markdown("## Daily wind speed and gusts")
 plot_daily_data_wind_speed(daily_data)
+
+st.markdown("## Daily Mean Sea Level Pressure")
+plot_daily_annual_comp_pres(daily_data)
 
 st.markdown("## Monthly Temperature")
 plot_monthly_data_temp(monthly_data, monthly_data_means)
