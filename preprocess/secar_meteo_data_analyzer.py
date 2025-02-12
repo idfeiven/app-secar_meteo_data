@@ -86,8 +86,8 @@ def parse_meteo_data(path):
 
 def get_daily_data(data_parsed):
     #resample 10-min data to daily data:
-    max_daily_data = data_parsed.drop(["wind_direction", "wind_gust_dir"], axis = 1).set_index('date').resample('D').max()[['high_temp_deg', 'wind_gust_kmh', 'rain_10min_mm', 'rain_rate_mmh']]
-    min_daily_data = data_parsed.drop(["wind_direction", "wind_gust_dir"], axis = 1).set_index('date').resample('D').min()[['low_temp_deg']]
+    max_daily_data = data_parsed.drop(["wind_direction", "wind_gust_dir"], axis = 1).set_index('date').resample('D').max()[['high_temp_deg', 'wind_gust_kmh', 'rain_10min_mm', 'rain_rate_mmh', 'pressure_hPa']]
+    min_daily_data = data_parsed.drop(["wind_direction", "wind_gust_dir"], axis = 1).set_index('date').resample('D').min()[['low_temp_deg', 'pressure_hPa']]
     mean_daily_data = data_parsed.drop(["wind_direction", "wind_gust_dir"], axis = 1).set_index('date').resample('D').mean()[['temp_out_deg', 'rel_humidity_perc', 'dewpoint_deg', 'wind_speed_kmh', 'pressure_hPa']]
     daily_pcp_data_stn = data_parsed.drop(["wind_direction", "wind_gust_dir"], axis = 1).set_index('date').resample('D').sum()[['rain_10min_mm']].rename(columns = {'rain_10min_mm': 'daily_rain_mm'})
     
