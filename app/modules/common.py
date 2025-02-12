@@ -23,13 +23,13 @@ def get_dict_rename_cols():
                       "low_temp_deg": "Minimum Temperature (°C)",
                       "daily_rain_mm": "Daily precipitation (weather station, mm)",
                       "temp_out_deg": "Temperature (°C)",
-                      "mean_rel_humidity_perc": "Mean Humidity (%)",
+                      "rel_humidity_perc": "Mean Humidity (%)",
                       "max_rel_humidity_perc": "Maximum Humidity (%)",
                       "min_rel_humidity_perc": "Minimum Humidity (%)",
                       "dewpoint_deg": "Dew Point (°C)",
                       "wind_speed_kmh": "Wind Speed (km/h)",
                       "wind_direction": "Wind Direction (°)",
-                      "mean_pressure_hPa": "Mean Sea Level Pressure (hPa)",
+                      "pressure_hPa": "Mean Sea Level Pressure (hPa)",
                       "max_pressure_hPa": "Maximum Sea Level Pressure (hPa)",
                       "min_pressure_hPa": "Minimum Sea Level Pressure (hPa)"}
 
