@@ -61,6 +61,17 @@ def plot_static_histogram(data, column):
         st.pyplot(fig)
 
 
+def get_daily_data_ranking(data):
+    data.rename(columns = get_dict_rename_cols(), inplace=True)
+    daily_ranking = pd.DataFrame()
+    for col in data.columns:
+        daily_ranking = pd.concat([daily_ranking,
+                                   data.sort_values(by = col, ascending=False).reset_index()[['date', col]]],
+                                   axis = 1)
+        daily_ranking.rename(columns = {"date": f"date {col}"}, inplace=True)
+    return(daily_ranking)
+
+
 st.markdown("# Station statistics")
 st.write(
     """In this page you can inspect the station data statistics"""
