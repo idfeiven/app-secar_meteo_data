@@ -11,12 +11,9 @@ Palma Secar de la Real y representa datos 10-minutales, diarios
 y mensuales
 '''
 
-#Importamos módulo de álgebra lineal y matrices
+import warnings
 import numpy as np
 import pandas as pd
-import warnings
-import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
 from pathlib import Path
 
 warnings.filterwarnings('ignore')
