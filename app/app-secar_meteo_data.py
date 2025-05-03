@@ -17,7 +17,7 @@ recent_data_page = st.Page("modules/recent_data_page.py", title = "Datos recient
 monthly_summary_page = st.Page("modules/monthly_summary_page.py", title = "Resúmenes mensuales")
 historical_data_page = st.Page("modules/historical_data_page.py", title = "Histórico")
 annual_comparison_page = st.Page("modules/annual_comparison_page.py", title = "Comparativa anual de datos diarios")
-extreme_data_page = st.Page("modules/mean_values_page.py", title = "Valores medios mensuales")
+mean_data_page = st.Page("modules/mean_values_page.py", title = "Valores medios mensuales")
 extreme_data_page = st.Page("modules/extreme_data_page.py", title = "Valores extremos")
 statistics_page = st.Page("modules/statistics_and_rankings_page.py", title = "Valores frecuentes y ránkings") 
 indicators_page = st.Page("modules/indicators_page.py", title = "Indicadores climáticos")
@@ -27,9 +27,11 @@ pg = st.navigation([homepage,
                     current_conditions_page,
                     daily_summary_page,
                     recent_data_page,
+                    monthly_summary_page,
                     historical_data_page,
                     annual_comparison_page,
                     statistics_page,
+                    mean_data_page,
                     extreme_data_page,
                     indicators_page
                     ]
