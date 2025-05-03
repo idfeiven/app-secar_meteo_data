@@ -9,7 +9,7 @@ import plotly.graph_objects as go
 
 def select_column_box(data, key):
     # Seleccionar una variable del dataset
-    column = st.selectbox("Select a variable to plot", data.columns, key = key)
+    column = st.selectbox("Selecciona una variable para representar", data.columns, key = key)
     return column
 
 
@@ -97,7 +97,7 @@ def load_10min_data():
 
 def plot_interactive_current(data_current, column):
     #Crear gráfico de una variable del dataset para el año 2024
-    st.write(f"Interactive daily evolution plot for {column}")
+    st.write(f"Gráfico interactivo de {column}")
     fig = px.line(data_current, x=data_current.index, y=f"{column}")
     st.plotly_chart(fig)
 

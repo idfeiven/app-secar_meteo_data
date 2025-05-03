@@ -1,18 +1,20 @@
+import warnings
 import numpy as np
 import pandas as pd
 import streamlit as st
 import plotly.express as px
-import matplotlib.pyplot as plt
 from common import load_10min_data,\
                    load_daily_data,\
                    select_column_box,\
-                   get_dict_rename_cols
+                   get_dict_rename_cols,\
+                   get_monthly_data
 
+warnings.filterwarnings("ignore", category=FutureWarning)
 
 #-----------------------------------FUNCTIONS-----------------------------------#
 
 def get_daily_data_ranking(data):
-    data.rename(columns = get_dict_rename_cols(), inplace=True)
+    # data.rename(columns = get_dict_rename_cols(), inplace=True)
     daily_ranking = pd.DataFrame()
     for col in data.columns:
         daily_ranking = pd.concat([daily_ranking,
@@ -71,17 +73,6 @@ def plot_interactive_histogram(data, column):
         st.plotly_chart(fig)
 
 
-def get_daily_data_ranking(data):
-    data.rename(columns = get_dict_rename_cols(), inplace=True)
-    daily_ranking = pd.DataFrame()
-    for col in data.columns:
-        daily_ranking = pd.concat([daily_ranking,
-                                   data.sort_values(by = col, ascending=False).reset_index()[['date', col]]],
-                                   axis = 1)
-        daily_ranking.rename(columns = {"date": f"date {col}"}, inplace=True)
-    return(daily_ranking)
-
-
 #-----------------------------------MAIN PROGRAM-----------------------------------#
 
 st.markdown("# Valores frecuentes y ránkings")
@@ -102,25 +93,26 @@ wind_data = get_wind_data(raw_data)
 wind_rose_data = get_df_wind_rose(wind_data)
 plot_interactive_wind_rose(wind_rose_data)
 
+# Crear tabla de ránking mensual
+st.markdown('## Ránking mensual')
+st.write("Ránking mensual de las variables seleccionadas")
+monthly_data = get_monthly_data(data)
+monthly_ranking = get_monthly_data_ranking(monthly_data)
+st.dataframe(monthly_ranking)
+
+# Crear tabla de ránking diario
+st.markdown('## Ránking diario')
+st.write("Ránking diario de las variables seleccionadas")
+data.rename(columns = get_dict_rename_cols(), inplace=True)
+daily_ranking = get_daily_data_ranking(data)
+st.dataframe(daily_ranking)
 
 # Crear el histograma
 st.markdown('## Histograma')
 st.write("Histogramas de las variables seleccionadas")
 # Seleccionar una variable del dataset
-data.rename(columns = get_dict_rename_cols(), inplace=True)
 column = select_column_box(data, key = data.columns[0])
 
 st.write(f"Histograma interactivo de {column}. {len(data[column].dropna())} valores usados.")
 plot_interactive_histogram(data, column)
 
-# Crear tabla de ránking diario
-st.markdown('## Ránking diario')
-st.write("Ránking diario de las variables seleccionadas")
-daily_ranking = get_daily_data_ranking(data)
-st.dataframe(daily_ranking)
-
-# Crear tabla de ránking mensual
-st.markdown('## Ránking mensual')
-st.write("Ránking mensual de las variables seleccionadas")
-monthly_ranking = get_monthly_data_ranking(data)
-st.dataframe(monthly_ranking)

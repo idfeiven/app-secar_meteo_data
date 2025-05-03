@@ -11,15 +11,15 @@ from common import load_10min_data,\
 
 #----------------------------------FUNCTIONS----------------------------------#
 
-def select_history_data_type(key = "Daily data"):
+def select_history_data_type(key = "Datos diarios"):
     #Seleccionar el tipo de datos históricos a representar
-    data_type = st.selectbox("Selecciona el tipo de datos a representar", ["10-min data", "Daily data"], key = key)
-    if data_type == "Daily data":
+    data_type = st.selectbox("Selecciona el tipo de datos a representar", ["Datos 10-minutales", "Datos diarios"], key = key)
+    if data_type == "Datos diarios":
         daily_data = load_daily_data()
         daily_data.rename(columns = get_dict_rename_cols(), inplace=True)
         return daily_data, data_type
     
-    elif data_type == "10-min data":
+    elif data_type == "Datos 10-minutales":
         raw_data = load_10min_data()
         raw_data['pcp (mm)'] = np.nan
         raw_data['daily_rain_mm'] = np.nan
@@ -122,17 +122,16 @@ cmaps_10min = {
     'Humedad (%)': 'BuPu',
     'Punto de rocío (°C)': 'BuPu',
     'Velocidad del viento (km/h)': 'Greys',
-    'Presión al nivel del mar (hPa)': 'PuRd'}
+    'Presión a nivel del mar (hPa)': 'PuRd'}
 
-# default gradient
-style = data_filter.style.background_gradient()
+# Selección del mapa de color adecuado
+cmaps = cmaps_daily if data_type == "Datos diarios" else cmaps_10min
 
-if data_type == "Daily data":
-    cmaps = cmaps_daily
-if data_type == "10-min data":
-    cmaps = cmaps_10min
-
+# Aplicar estilos con gradientes de color solo a columnas existentes
+style = data_filter.style
 for col, cmap in cmaps.items():
-    style = style.background_gradient(cmap, subset=col)
+    if col in data_filter.columns:
+        style = style.background_gradient(cmap=cmap, subset=[col])
 
+# Mostrar el dataframe con estilos
 st.dataframe(style)
