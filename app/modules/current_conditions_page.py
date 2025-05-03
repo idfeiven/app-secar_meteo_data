@@ -3,6 +3,7 @@ import requests
 import pandas as pd
 import streamlit as st
 
+#--------------------------------FUNCTIONS----------------------------------#
 
 def _get_url_api_wu(mode): #set mode. Accepts current, daily
     station_id = 'IPALMA141' #select a station id from Weather Underground
@@ -31,22 +32,24 @@ def get_current_weather_data(mode): #set mode. Accepts current, daily
 
 def show_current_weather_data(current_data):
     if not(current_data.empty):
-        st.write(f"Last observation: {current_data['obsTimeLocal'][0]}")
-        col1, col2, col3 = st.columns(3) #create 3 columns
+        st.write(f"Última observación: {current_data['obsTimeLocal'][0]}")
+        col1, col2, col3 = st.columns(3) #crear 3 columnas
         
-        col1.metric("Temperature (°C)", current_data['metric.temp']) #display data as a metric
-        col2.metric("Humidity (%)", current_data['humidity'])            
-        col3.metric("Wind gust last 10 min (km/h)", current_data['metric.windSpeed'])
+        col1.metric("Temperatura (°C)", current_data['metric.temp']) #mostrar datos como métrica
+        col2.metric("Humedad (%)", current_data['humidity'])            
+        col3.metric("Ráfaga de viento últimos 10 min (km/h)", current_data['metric.windSpeed'])
 
         col1, col2, col3 = st.columns(3)
 
-        col1.metric("Pressure (hPa)", current_data['metric.pressure'])            
-        col2.metric("Daily precipitation (mm)", current_data['metric.precipTotal'])
-        col3.metric("Rain rate (mm/h)", current_data['metric.precipRate'])
+        col1.metric("Presión (hPa)", current_data['metric.pressure'])            
+        col2.metric("Precipitación diaria (mm)", current_data['metric.precipTotal'])
+        col3.metric("Tasa de lluvia (mm/h)", current_data['metric.precipRate'])
 
 
-st.markdown("## Current conditions")
-st.write("Data taken from Wunderground web API. Update interval: 20 seconds")
+#--------------------------------MAIN PROGRAM----------------------------------#
+
+st.markdown("## Condiciones actuales")
+st.write("Datos obtenidos de la API web de Wunderground. Intervalo de actualización: 20 segundos")
 
 while True:
     current_data = get_current_weather_data(mode = 'current')  

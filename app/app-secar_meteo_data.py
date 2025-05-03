@@ -19,7 +19,7 @@ historical_data_page = st.Page("modules/historical_data_page.py", title = "Hist�
 annual_comparison_page = st.Page("modules/annual_comparison_page.py", title = "Comparativa anual de datos diarios")
 extreme_data_page = st.Page("modules/mean_values_page.py", title = "Valores medios mensuales")
 extreme_data_page = st.Page("modules/extreme_data_page.py", title = "Valores extremos")
-statistics_page = st.Page("modules/statistics_page.py", title = "Valores frecuentes y ránkings") 
+statistics_page = st.Page("modules/statistics_and_rankings_page.py", title = "Valores frecuentes y ránkings") 
 indicators_page = st.Page("modules/indicators_page.py", title = "Indicadores climáticos")
 # for multiple pages in one category, define a dictionary
 

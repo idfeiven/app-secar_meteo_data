@@ -74,12 +74,12 @@ monthly_data_means["Month"] = np.arange(1,13)
 monthly_data_means.set_index("Month", inplace=True)
 monthly_data_means = monthly_data_means.round(2)
 
-monthly_data_means.rename(columns = {"mean_temp_out_deg": "Mean Temperature (°C)",
-                                        "mean_high_temp_deg": "Mean of Max Temperatures (°C)",
-                                        "mean_low_temp_deg": "Mean of Min Temperatures (°C)",
-                                        "mean_rel_humidity_perc": "Mean Relative Humidity (%)",
-                                        "mean_dewpoint_deg": "Mean Dewpoint Temperature (°C)",
-                                        "mean_wind_speed_kmh": "Mean Wind Speed (km/h)",
-                                        "mean_pressure_hPa": "Mean Sea Level Pressure (hPa)",
-                                        "mean_pcp_acum_month_mm": "Mean Precipitation (mm)"}, inplace=True)
+monthly_data_means.rename(columns = {"mean_temp_out_deg": "Temperatura Media (°C)",
+                                        "mean_high_temp_deg": "Media de Temperaturas Máximas (°C)",
+                                        "mean_low_temp_deg": "Media de Temperaturas Mínimas (°C)",
+                                        "mean_rel_humidity_perc": "Humedad Relativa Media (%)",
+                                        "mean_dewpoint_deg": "Temperatura Media de Punto de Rocío (°C)",
+                                        "mean_wind_speed_kmh": "Velocidad Media del Viento (km/h)",
+                                        "mean_pressure_hPa": "Presión Media al Nivel del Mar (hPa)",
+                                        "mean_pcp_acum_month_mm": "Precipitación Media (mm)"}, inplace=True)
 st.dataframe(monthly_data_means)

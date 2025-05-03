@@ -1,5 +1,3 @@
-import numpy as np
-import pandas as pd
 import streamlit as st
 from common import load_daily_data,\
                    plot_interactive_data_by_year,\
@@ -10,7 +8,7 @@ from common import load_daily_data,\
 
 st.markdown("# Compartición de datos diarios entre años")
 st.write("Esta sección permite comparar los datos diarios entre años. \n \
-    Se puede seleccionar una variable y el año de interés. \n \ ")
+    Se puede seleccionar una variable y el año de interés. \n ")
 
 
 # get the data

@@ -151,14 +151,14 @@ def plot_interactive_comparison_cumulative_data(df,
         x=yearly_data['aligned_date'],
         y=yearly_data[col_1].cumsum(),
         mode='lines',
-        name=str(year)
+        name=col_1+str(year)
     ))
 
     fig.add_trace(go.Scatter(
     x=yearly_data['aligned_date'],
     y=yearly_data[col_2].cumsum(),
     mode='lines',
-    name=str(year)
+    name=col_2+str(year)
     ))
 
     fig.add_trace(go.Scatter(

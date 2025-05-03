@@ -17,33 +17,11 @@ def get_extreme_data(data):
     extr_vals = pd.concat([min_vals, max_vals], axis = 1)
     extr_vals.rename(get_dict_rename_cols(), inplace=True)
     
-    extr_vals.rename(columns = {"min_value": "Record Minimum",
-                      "date_min_value": "Date Record Minimum",
-                      "max_value": "Record Maximum",
-                      "date_max_value": "Date Record Max"}, inplace=True)
+    extr_vals.rename(columns = {"min_value": "Mínimo Récord",
+                      "date_min_value": "Fecha Mínimo Récord",
+                      "max_value": "Máximo Récord",
+                      "date_max_value": "Fecha Máximo Récord"}, inplace=True)
     return(extr_vals)
-
-
-def get_daily_data_ranking(data):
-    data.rename(columns = get_dict_rename_cols(), inplace=True)
-    daily_ranking = pd.DataFrame()
-    for col in data.columns:
-        daily_ranking = pd.concat([daily_ranking,
-                                   data.sort_values(by = col, ascending=False).reset_index()[['date', col]]],
-                                   axis = 1)
-        daily_ranking.rename(columns = {"date": f"date {col}"}, inplace=True)
-    return(daily_ranking)
-
-
-def get_monthly_data_ranking(monthly_data):
-    monthly_ranking = pd.DataFrame()
-    for col in monthly_data.drop('date', axis = 1).columns:
-        monthly_ranking_var = monthly_data.sort_values(by = col, ascending=False).reset_index()[['date', col]]
-        monthly_ranking_var["date"] = monthly_ranking_var["date"].dt.strftime("%Y-%m")
-        monthly_ranking_var.rename(columns = {"date": f"Month of {col}"}, inplace = True)
-        monthly_ranking = pd.concat([monthly_ranking, monthly_ranking_var], axis = 1)
-
-    return(monthly_ranking)
 
 
 def get_monthly_data_extremes(monthly_data):
@@ -87,10 +65,10 @@ def get_monthly_data_extremes(monthly_data):
     return df_month_max, df_month_min
 
 
-st.markdown("# Extreme data")
+st.markdown("# Datos extremos")
 st.write(
-    """In this page you can inspect extreme data from the weather
-    station"""
+    """En esta página puedes inspeccionar los datos extremos de la
+    estación meteorológica"""
 )
 
 # Cargar el dataset desde un archivo local
@@ -98,22 +76,14 @@ data = load_daily_data()
 monthly_data = get_monthly_data(data)
 
 #Calculate extreme weather data
-st.markdown("## Daily extremes")
+st.markdown("## Extremos diarios")
 extr_data = get_extreme_data(data)
 st.dataframe(extr_data)
 
-# Calculate daily rankings
-st.markdown("## Daily ranking")
-daily_ranking = get_daily_data_ranking(data)
-st.dataframe(daily_ranking)
-
 # Calculate monthly extremes
 df_month_max, df_month_min = get_monthly_data_extremes(monthly_data)
-monthly_ranking = get_monthly_data_ranking(monthly_data)
 
 st.markdown("## Monthly extremes")
-st.markdown("## Monthly Ranking")
-st.dataframe(monthly_ranking)
 
 st.markdown("### Monthly maximum records")
 st.dataframe(df_month_max)

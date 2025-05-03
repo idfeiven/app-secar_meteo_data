@@ -9,6 +9,30 @@ from common import load_10min_data,\
                    get_dict_rename_cols
 
 
+#-----------------------------------FUNCTIONS-----------------------------------#
+
+def get_daily_data_ranking(data):
+    data.rename(columns = get_dict_rename_cols(), inplace=True)
+    daily_ranking = pd.DataFrame()
+    for col in data.columns:
+        daily_ranking = pd.concat([daily_ranking,
+                                   data.sort_values(by = col, ascending=False).reset_index()[['date', col]]],
+                                   axis = 1)
+        daily_ranking.rename(columns = {"date": f"date {col}"}, inplace=True)
+    return(daily_ranking)
+
+
+def get_monthly_data_ranking(monthly_data):
+    monthly_ranking = pd.DataFrame()
+    for col in monthly_data.drop('date', axis = 1).columns:
+        monthly_ranking_var = monthly_data.sort_values(by = col, ascending=False).reset_index()[['date', col]]
+        monthly_ranking_var["date"] = monthly_ranking_var["date"].dt.strftime("%Y-%m")
+        monthly_ranking_var.rename(columns = {"date": f"Month of {col}"}, inplace = True)
+        monthly_ranking = pd.concat([monthly_ranking, monthly_ranking_var], axis = 1)
+
+    return(monthly_ranking)
+
+
 def get_wind_data(raw_data):
     wind_data = raw_data[raw_data["wind_speed_kmh"] > 0.0][["wind_speed_kmh", "wind_direction"]]
     wind_data["wind_direction"] = pd.Categorical(wind_data["wind_direction"], ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"])
@@ -58,6 +82,8 @@ def get_daily_data_ranking(data):
     return(daily_ranking)
 
 
+#-----------------------------------MAIN PROGRAM-----------------------------------#
+
 st.markdown("# Valores frecuentes y ránkings")
 st.write(
     """En esta sección se pueden visualizar los histogramas de las variables seleccionadas y los ránkings diarios de las variables seleccionadas.
@@ -93,7 +119,8 @@ st.write("Ránking diario de las variables seleccionadas")
 daily_ranking = get_daily_data_ranking(data)
 st.dataframe(daily_ranking)
 
-#Añadir descripción de variables
-# st.write("Variable description")
-# df_var_descr = get_df_variable_description(data)
-# df_var_descr
+# Crear tabla de ránking mensual
+st.markdown('## Ránking mensual')
+st.write("Ránking mensual de las variables seleccionadas")
+monthly_ranking = get_monthly_data_ranking(data)
+st.dataframe(monthly_ranking)

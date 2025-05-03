@@ -11,9 +11,9 @@ def filter_current_data(data):
     return data_current
 
 
-st.markdown("# Recent data")
+st.markdown("# Datos recientes")
 st.write(
-    """In this page you can inspect weather data of the last 30 days."""
+    """En esta página puedes inspeccionar los datos meteorológicos de los últimos 30 días."""
 )
 
 data = load_daily_data()

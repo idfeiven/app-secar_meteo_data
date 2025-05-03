@@ -60,13 +60,13 @@ def get_daily_summary(today_data):
     daily_summary.loc['Min value', 'pressure_max_hPa'] = daily_summary.loc['Min value', 'pressure_min_hPa']
     daily_summary.loc['Mean value', 'pressure_max_hPa'] = daily_summary.loc['Mean value', 'pressure_min_hPa']
 
-    daily_summary.rename(columns = {'temperature_deg_max': 'Temperature (°C)',
-                                    'humidity_perc_max': 'Humidity (%)',
-                                    'wind_gust_kmh': 'Wind gust (km/h)',
-                                    'heat_index_deg': 'Heat Index (°C)',
-                                    'pressure_max_hPa': 'Pressure (hPa)',
-                                    'rain_rate_mmh': 'Rain rate (mm/h)',
-                                    'pcp_acum_mm': 'Accumulated precipitation (mm)'}, inplace=True)
+    daily_summary.rename(columns = {'temperature_deg_max': 'Temperatura (°C)',
+                                    'humidity_perc_max': 'Humedad (%)',
+                                    'wind_gust_kmh': 'Ráfaga de viento (km/h)',
+                                    'heat_index_deg': 'Índice de calor (°C)',
+                                    'pressure_max_hPa': 'Presión (hPa)',
+                                    'rain_rate_mmh': 'Tasa de lluvia (mm/h)',
+                                    'pcp_acum_mm': 'Precipitación acumulada (mm)'}, inplace=True)
     
     daily_summary.drop(['temperature_deg_min', 'humidity_perc_min',
                          'pressure_min_hPa', 'temperature_deg_mean',
@@ -104,9 +104,9 @@ def plot_interactive_current(data_current, column):
     st.plotly_chart(fig)
 
 
-st.markdown("# Palma Secar de la Real daily summary")
+st.markdown("# Resumen diario de Palma Secar de la Real")
 
-st.write("Data is updated every 5 minutes. Refresh the page to update.")
+st.write("Los datos se actualizan cada 5 minutos. Actualiza la página para obtener los datos más recientes.")
 
 today_data = get_current_weather_data(mode = 'daily')
 if not(today_data.empty):
@@ -114,12 +114,12 @@ if not(today_data.empty):
     
 
     daily_summary = get_daily_summary(today_data)
-    st.markdown(f'## Daily summary for {today_data.index[0].date()}')
+    st.markdown(f'## Resumen diario para el día {today_data.index[0].date()}')
     st.dataframe(daily_summary)
 
-    st.markdown('## 5 minute data plots')
+    st.markdown('## Gráficas de datos 5-minutales')
     column = select_column_box(today_data, key = "temperature_deg")
     plot_interactive_current(today_data, column)
 
-    st.markdown("## 5 minute data in table")
+    st.markdown("## Datos 5-minutales en tabla")
     st.dataframe(today_data)

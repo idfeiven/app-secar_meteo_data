@@ -11,11 +11,11 @@ def get_map_data():
 
 
 # Título de la aplicación
-st.title("Palma Secar de la Real weather data")
+st.title("Estación meteorológica Palma Secar de la Real")
+st.write("Esta aplicación web muestra los datos de la estación\
+        meteorológica ubicada en el barrio Palma Secar de la Real,\
+        Mallorca. Modelo Davis Vantage Vue")
 
-st.write("In this web app you can find my weather station data\
-        located in Palma Secar de la Real neighborhood, Mallorca")
-
-st.markdown("## Station location")
+st.markdown("## Localización de la estación")
 map_data = get_map_data()
 st.map(map_data)
