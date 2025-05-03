@@ -16,15 +16,16 @@ k_trans = ["Año y mes",
            'Ráfaga máxima de viento mensual (km/h)',
            'Máxima lluvia en 10 minutos mensual (mm)',
            'Máxima tasa de lluvia instantánea mensual (mm/h)',
-           'Temperatura media mensual (°C)',
-           "Temperatura mínima mensual (°C)",
-           "Precipitación mensual acumulada (mm)",
-           'Temperatura máxima media mensual (°C)',
-           'Temperatura mínima media mensual (°C)',
+           'Temperatura mínima mensual (°C)',
+           "Temperatura media mensual (°C)",
+           'Media de las temperaturas máximas (°C)',
+           'Media de las temperaturas mínimas (°C)',
            'Humedad relativa media mensual (%)',
            'Punto de rocío medio mensual (°C)',
            'Velocidad media del viento mensual (km/h)',
-           'Presión media mensual (hPa)']
+           'Presión media mensual (hPa)',
+           "Precipitación mensual acumulada (mm)",
+]
 
 monthly_data.rename(columns = dict(zip(monthly_data.columns, k_trans)), inplace = True)
 monthly_data.set_index("Año y mes", inplace = True)
