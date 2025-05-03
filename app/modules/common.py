@@ -1,10 +1,9 @@
 # common functions to use in the app modules
 
+import pandas as pd
 import streamlit as st
 from pathlib import Path
-import pandas as pd
 import plotly.express as px
-import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 
 
@@ -16,43 +15,43 @@ def select_column_box(data, key):
 
 def get_dict_rename_cols():
 
-    dict_rename_cols = {"pcp (mm)": "Daily Precipitation (manual rain gauge, mm)",
-                      "high_temp_deg": "Maximum Temperature (°C)",
-                      "wind_gust_kmh": "Wind Gust (km/h)",
-                      "wind_gust_dir": "Wind Gust Direction (°)",
-                      "rain_10min_mm": "Precipitation in 10 minutes (mm)",
-                      "rain_rate_mmh": "Instantaneous Rain Rate (mm/h)",
-                      "low_temp_deg": "Minimum Temperature (°C)",
-                      "daily_rain_mm": "Daily precipitation (weather station, mm)",
-                      "temp_out_deg": "Temperature (°C)",
-                      "rel_humidity_perc": "Humidity (%)",
-                      "mean_rel_humidity_perc": "Mean Humidity (%)",
-                      "max_rel_humidity_perc": "Maximum Humidity (%)",
-                      "min_rel_humidity_perc": "Minimum Humidity (%)",
-                      "dewpoint_deg": "Dew Point (°C)",
-                      "wind_speed_kmh": "Wind Speed (km/h)",
-                      "wind_direction": "Wind Direction (°)",
-                      "pressure_hPa": "Sea Level Pressure (hPa)",
-                      "mean_pressure_hPa": "Mean Sea Level Pressure (hPa)",
-                      "max_pressure_hPa": "Maximum Sea Level Pressure (hPa)",
-                      "min_pressure_hPa": "Minimum Sea Level Pressure (hPa)"}
+    dict_rename_cols = {"pcp (mm)": "Precipitación diaria (pluviómetro manual, mm)",
+                      "high_temp_deg": "Temperatura máxima (°C)",
+                      "wind_gust_kmh": "Ráfaga de viento (km/h)",
+                      "wind_gust_dir": "Dirección de ráfaga de viento (°)",
+                      "rain_10min_mm": "Precipitación en 10 minutos (mm)",
+                      "rain_rate_mmh": "Tasa de lluvia instantánea (mm/h)",
+                      "low_temp_deg": "Temperatura mínima (°C)",
+                      "daily_rain_mm": "Precipitación diaria (estación meteorológica, mm)",
+                      "temp_out_deg": "Temperatura (°C)",
+                      "rel_humidity_perc": "Humedad (%)",
+                      "mean_rel_humidity_perc": "Humedad media (%)",
+                      "max_rel_humidity_perc": "Humedad máxima (%)",
+                      "min_rel_humidity_perc": "Humedad mínima (%)",
+                      "dewpoint_deg": "Punto de rocío (°C)",
+                      "wind_speed_kmh": "Velocidad del viento (km/h)",
+                      "wind_direction": "Dirección del viento (°)",
+                      "pressure_hPa": "Presión a nivel del mar (hPa)",
+                      "mean_pressure_hPa": "Presión media a nivel del mar (hPa)",
+                      "max_pressure_hPa": "Presión máxima a nivel del mar (hPa)",
+                      "min_pressure_hPa": "Presión mínima a nivel del mar (hPa)"}
 
     return dict_rename_cols
 
 
 def get_df_variable_description(data):
-    var_description = ["Daily accumulated precipitation from manual rain gauge",
-                    "Daily maximum temperature in degrees Celsius",
-                    "Daily maximum wind gust in km/h",
-                    "Daily maximum 10-min rain accumulation from automatic rain gauge",
-                    "Daily maximum rain rate from automatic rain gauge",
-                    "Daily minimum temperature in degrees Celsius",
-                    "Daily accumulated precipitation from automatic rain gauge",
-                    "Daily mean temperature in degrees Celsius",
-                    "Daily mean relative humidity",
-                    "Daily mean dewpoint in degrees Celsius",
-                    "Daily mean wind speed in km/h",
-                    "Daily mean pressure in hPa"
+    var_description = ["Precipitación diaria acumulada del pluviómetro manual",
+                    "Temperatura máxima diaria en grados Celsius",
+                    "Ráfaga máxima diaria de viento en km/h",
+                    "Acumulación máxima diaria de lluvia en 10 minutos del pluviómetro automático",
+                    "Tasa máxima diaria de lluvia del pluviómetro automático",
+                    "Temperatura mínima diaria en grados Celsius",
+                    "Precipitación diaria acumulada del pluviómetro automático",
+                    "Temperatura media diaria en grados Celsius",
+                    "Humedad relativa media diaria",
+                    "Punto de rocío medio diario en grados Celsius",
+                    "Velocidad media diaria del viento en km/h",
+                    "Presión media diaria en hPa"
                     ]
     var_validity = ["2014-01-11",
                     "2021-02-06",

@@ -58,9 +58,10 @@ def get_daily_data_ranking(data):
     return(daily_ranking)
 
 
-st.markdown("# Station statistics")
+st.markdown("# Valores frecuentes y ránkings")
 st.write(
-    """In this page you can inspect the station data statistics"""
+    """En esta sección se pueden visualizar los histogramas de las variables seleccionadas y los ránkings diarios de las variables seleccionadas.
+    Se pueden seleccionar las variables a visualizar en los histogramas y los ránkings diarios."""
 ) 
 
 #Seleccionar un período de tiempo y representar período de tiempo
@@ -68,8 +69,8 @@ data = load_daily_data()
 raw_data = load_10min_data()
 
 #Crear rosa de los vientos con datos 10-minutales
-st.markdown("## Wind rose")
-st.write("Wind rose for 10-min average wind speed")
+st.markdown("## Rosa de los vientos")
+st.write("Rosa de los vientos con datos 10-minutales")
 
 wind_data = get_wind_data(raw_data)
 wind_rose_data = get_df_wind_rose(wind_data)
@@ -77,19 +78,18 @@ plot_interactive_wind_rose(wind_rose_data)
 
 
 # Crear el histograma
-st.markdown('## Histogram')
-st.write("Plot a histogram for a variable. Uses all available data")
+st.markdown('## Histograma')
+st.write("Histogramas de las variables seleccionadas")
 # Seleccionar una variable del dataset
 data.rename(columns = get_dict_rename_cols(), inplace=True)
 column = select_column_box(data, key = data.columns[0])
 
-st.write(f"Interactive histogram of {column}. {len(data[column].dropna())} values were used.")
+st.write(f"Histograma interactivo de {column}. {len(data[column].dropna())} valores usados.")
 plot_interactive_histogram(data, column)
 
-st.write(f"Static histogram of {column}. {len(data[column].dropna())} values were used.")
-
 # Crear tabla de ránking diario
-st.markdown('## Daily Ranking')
+st.markdown('## Ránking diario')
+st.write("Ránking diario de las variables seleccionadas")
 daily_ranking = get_daily_data_ranking(data)
 st.dataframe(daily_ranking)
 
