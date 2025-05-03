@@ -5,6 +5,8 @@ from pathlib import Path
 import pandas as pd
 import plotly.express as px
 import matplotlib.pyplot as plt
+import plotly.graph_objects as go
+
 
 def select_column_box(data, key):
     # Seleccionar una variable del dataset
@@ -101,16 +103,82 @@ def plot_interactive_current(data_current, column):
     st.plotly_chart(fig)
 
 
-def plot_static_current(data_current, column):
-    st.write(f"Static daily evolution plot for {column}")
+def plot_interactive_data_by_year(df, value_col, title, yaxis_title):
 
-    fig, ax = plt.subplots()
-    ax.plot(data_current[column].dropna())
-    ax.set_xlabel('date')
-    ax.set_ylabel(column)
-    ax.grid()
-    fig.autofmt_xdate()
-    st.pyplot(fig)
+    fig = go.Figure()
+    
+    # Añadir columna con fecha ficticia para alineación
+    df['aligned_date'] = pd.to_datetime('2000-' + df.index.strftime('%m-%d'))
+
+    for year in sorted(df.dropna(subset=value_col).index.year.unique()):
+        yearly_data = df[df.index.year == year]
+        fig.add_trace(go.Scatter(
+            x=yearly_data['aligned_date'],
+            y=yearly_data[value_col],
+            mode='lines',
+            name=str(year)
+        ))
+
+    fig.update_layout(
+        title=title,
+        xaxis_title='Día del año',
+        yaxis_title=yaxis_title,
+        xaxis=dict(tickformat='%d-%m'),
+        height=500,
+        width=900
+    )
+
+    return fig
+
+
+def plot_interactive_comparison_cumulative_data(df,
+                                                year,
+                                                col_1,
+                                                col_2,
+                                                col_mean,
+                                                title,
+                                                yaxis_title):
+
+    fig = go.Figure()
+    
+    # Añadir columna con fecha ficticia para alineación
+    df['aligned_date'] = pd.to_datetime('2000-' + df.index.strftime('%m-%d'))
+
+    cumsum_mean = df[col_mean].groupby(df.index.strftime('%m-%d')).mean().cumsum()
+    year_min = df[col_mean].dropna().index.year.min()
+
+    yearly_data = df[df.index.year == year]
+    fig.add_trace(go.Scatter(
+        x=yearly_data['aligned_date'],
+        y=yearly_data[col_1].cumsum(),
+        mode='lines',
+        name=str(year)
+    ))
+
+    fig.add_trace(go.Scatter(
+    x=yearly_data['aligned_date'],
+    y=yearly_data[col_2].cumsum(),
+    mode='lines',
+    name=str(year)
+    ))
+
+    fig.add_trace(go.Scatter(
+    x=yearly_data['aligned_date'],
+    y=cumsum_mean,
+    mode='lines',
+    name=f"Media {year_min}-{year}"
+    ))
+
+    fig.update_layout(
+        title=title,
+        xaxis_title='Día del año',
+        yaxis_title=yaxis_title,
+        xaxis=dict(tickformat='%d-%m'),
+        height=500,
+        width=900
+    )
+
+    return fig
 
 
 def get_monthly_data(daily_data):

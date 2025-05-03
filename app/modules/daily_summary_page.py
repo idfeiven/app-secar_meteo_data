@@ -104,18 +104,6 @@ def plot_interactive_current(data_current, column):
     st.plotly_chart(fig)
 
 
-def plot_static_current(data_current, column):
-    st.write(f"Static daily evolution plot for {column}")
-
-    fig, ax = plt.subplots()
-    ax.plot(data_current[column].dropna())
-    ax.set_xlabel('date')
-    ax.set_ylabel(column)
-    ax.grid()
-    fig.autofmt_xdate()
-    st.pyplot(fig)
-
-
 st.markdown("# Palma Secar de la Real daily summary")
 
 st.write("Data is updated every 5 minutes. Refresh the page to update.")
@@ -132,7 +120,6 @@ if not(today_data.empty):
     st.markdown('## 5 minute data plots')
     column = select_column_box(today_data, key = "temperature_deg")
     plot_interactive_current(today_data, column)
-    plot_static_current(today_data, column)
 
     st.markdown("## 5 minute data in table")
     st.dataframe(today_data)

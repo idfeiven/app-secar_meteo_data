@@ -64,19 +64,6 @@ def plot_interactive_historical(data_filter, column):
         st.plotly_chart(fig)
 
 
-def plot_static_historical(data_filter, column):
-    if data_filter[column].empty:
-        st.write("No data to plot. Check variable availability in the variable description table.")
-    else:
-        fig, ax = plt.subplots()
-        ax.plot(data_filter[column].dropna())
-        ax.set_xlabel('date')
-        ax.set_ylabel(column)
-        ax.grid()
-        fig.autofmt_xdate()
-        st.pyplot(fig)
-
-
 st.markdown("# Historical data")
 st.write(
     """In this page you can inspect historical weather data"""
@@ -104,7 +91,6 @@ plot_interactive_historical(data_filter, column)
 
 st.write(f"Static daily evolution plot for {column}.\
         Period from {dt_ini.strftime('%d-%m-%Y')} to {dt_end.strftime('%d-%m-%Y')}")
-plot_static_historical(data_filter, column)
 
 #Mostrar datos en forma de tabla
 st.write("Data in table format for the selected period")
