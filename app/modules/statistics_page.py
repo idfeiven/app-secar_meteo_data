@@ -47,20 +47,6 @@ def plot_interactive_histogram(data, column):
         st.plotly_chart(fig)
 
 
-def plot_static_histogram(data, column):
-    if data[column].empty:
-        st.write("No data to plot. Check variable availability in the variable description table.")
-    else:
-        if column == 'pcp (mm)' or column == 'daily_rain_mm':
-            data = data[ data[column] >= 1. ]
-        fig, ax = plt.subplots()
-        ax.hist(data[column].dropna(), bins=30, edgecolor='k')
-        ax.set_xlabel(column)
-        ax.set_ylabel('Frequency')
-        ax.grid()
-        st.pyplot(fig)
-
-
 def get_daily_data_ranking(data):
     data.rename(columns = get_dict_rename_cols(), inplace=True)
     daily_ranking = pd.DataFrame()
@@ -101,8 +87,6 @@ st.write(f"Interactive histogram of {column}. {len(data[column].dropna())} value
 plot_interactive_histogram(data, column)
 
 st.write(f"Static histogram of {column}. {len(data[column].dropna())} values were used.")
-plot_static_histogram(data, column)
-
 
 # Crear tabla de ránking diario
 st.markdown('## Daily Ranking')

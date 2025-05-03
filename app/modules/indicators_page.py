@@ -5,7 +5,8 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from common import load_daily_data,\
                    plot_interactive_current,\
-                   select_column_box
+                   select_column_box,\
+                   plot_interactive_data_by_year
 
 
 def get_warm_nights_totals(daily_data):
@@ -82,56 +83,6 @@ def get_warm_nights_cumsum(daily_data, thres):
     return df_warm_nights_cumsum
 
 
-def plot_daily_annual_warm_nights(df_warm_nights, n_nights_classific, night_type):
-    df_warm_nights = df_warm_nights.reset_index()
-    year_min = 2021
-    max_year = df_warm_nights.date.max().year
-    years = np.arange(year_min, max_year + 1, 1)
-    fig, axs = plt.subplots(ncols = 1, figsize = (8,6))
-
-    plt.suptitle('Estación meteorológica Secar de la Real (Palma, España) \n Datos diarios. Elevación: 75 m \n',
-                 fontsize = 16,
-                 fontweight = 'bold')
-
-    if night_type == "tropical":
-        max_val = n_nights_classific.max()["Number of days with minimum temperature >= 20 °C"]
-        col_cumsum = "Total number of days with minimum temperature >= 20 °C"
-
-    if night_type == "scorching":
-        max_val = n_nights_classific.max()["Number of days with minimum temperature >= 25 °C"]
-        col_cumsum = "Total number of days with minimum temperature >= 25 °C"
-
-    if night_type == "infernal":
-        max_val = n_nights_classific.max()["Number of days with minimum temperature >= 30 °C"]
-        col_cumsum = "Total number of days with minimum temperature >= 30 °C"
-
-    for year in years:
-        df_warm_nights_year = df_warm_nights[df_warm_nights['date'].dt.year == year]
-        df_warm_nights_year = df_warm_nights_year.copy()
-        df_warm_nights_year['dates'] = df_warm_nights_year['date'].dt.strftime('%m-%d')       
-        df_warm_nights_year.plot('dates', col_cumsum, ax = axs, label = year)
-
-    axs.set_title(col_cumsum, fontsize = 12)
-    axs.set_ylabel(col_cumsum)
-    axs.set_ylim([0, max_val + 5])
-
-    if night_type == "tropical":
-        axs.set_yticks(np.arange(0, max_val + 5, 5))
-    if night_type == "scorching" or night_type == "infernal":
-        axs.set_yticks(np.arange(0, max_val + 1, 1))
-
-    axs.grid()
-    # set monthly locator
-    axs.xaxis.set_major_locator(mdates.MonthLocator(interval=1))
-    # set formatter
-    axs.xaxis.set_major_formatter(mdates.DateFormatter('%b'))
-
-    axs.margins(x = 0.0)
-
-    plt.tight_layout()
-    st.pyplot(fig)
-
-
 st.markdown('# Indicators')
 st.write('In this page you will find different climate indicators')
 
@@ -150,6 +101,21 @@ st.markdown('## Annual number of warm nights')
 plot_interactive_current(n_nights_classific, column = col)
 
 st.markdown('## Accumulated warm nights')
-plot_daily_annual_warm_nights(df_tropical_nights, n_nights_classific, night_type = "tropical")
-plot_daily_annual_warm_nights(df_scorching_nights, n_nights_classific, night_type = "scorching")
-plot_daily_annual_warm_nights(df_infernal_nights, n_nights_classific, night_type = "infernal")
+fig = plot_interactive_data_by_year(df_tropical_nights,
+                              value_col= "Total number of days with minimum temperature >= 20 °C",
+                              title = "Accumulated number of days with minimum temperature >= 20 °C",
+                              yaxis_title = "Accumulated number of days with minimum temperature >= 20 °C")
+st.plotly_chart(fig, use_container_width=True)
+
+fig = plot_interactive_data_by_year(df_scorching_nights,
+                              value_col= "Total number of days with minimum temperature >= 25 °C",
+                              title = "Accumulated number of days with minimum temperature >= 25 °C",
+                              yaxis_title = "Accumulated number of days with minimum temperature >= 25 °C")
+st.plotly_chart(fig, use_container_width=True)
+
+fig = plot_interactive_data_by_year(df_infernal_nights,
+                              value_col= "Total number of days with minimum temperature >= 30 °C",
+                              title = "Accumulated number of days with minimum temperature >= 30 °C",
+                              yaxis_title = "Accumulated number of days with minimum temperature >= 30 °C")
+st.plotly_chart(fig, use_container_width=True)
+
