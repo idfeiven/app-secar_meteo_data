@@ -47,6 +47,7 @@ def show_current_weather_data(current_data):
 
 
 #--------------------------------MAIN PROGRAM----------------------------------#
+st.set_page_config(page_title="Condiciones actuales", page_icon="🌤️", layout="wide")
 
 st.markdown("## Condiciones actuales")
 st.write("Datos obtenidos de la API web de Wunderground. Intervalo de actualización: 20 segundos")

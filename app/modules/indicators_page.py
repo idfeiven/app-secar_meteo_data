@@ -4,10 +4,10 @@ import streamlit as st
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from common import load_daily_data,\
-                   plot_interactive_current,\
                    select_column_box,\
                    plot_interactive_data_by_year
 
+# ----------------------------------FUNCTIONS----------------------------------
 
 def get_warm_nights_totals(daily_data):
     n_df_warm_nights = []
@@ -82,6 +82,8 @@ def get_warm_nights_cumsum(daily_data, thres):
 
     return df_warm_nights_cumsum
 
+# ----------------------------------MAIN PROGRAM----------------------------------
+st.set_page_config(page_title="Indicadores climáticos", page_icon="🌡️", layout="wide")
 
 st.markdown('# Indicadores climáticos')
 st.write('En esta página encontrarás diferentes indicadores climáticos')

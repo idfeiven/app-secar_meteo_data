@@ -5,8 +5,9 @@ from common import load_daily_data,\
 
 
 # -----------------------------------MAIN PROGRAM-----------------------------------
+st.set_page_config(page_title="Comparativa anual de datos diarios", page_icon="📊", layout="wide")
 
-st.markdown("# Compartición de datos diarios entre años")
+st.markdown("# Comparativa de datos diarios entre años")
 st.write("Esta sección permite comparar los datos diarios entre años. \n \
     Se puede seleccionar una variable y el año de interés. \n ")
 

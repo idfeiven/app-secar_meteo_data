@@ -10,6 +10,12 @@ def filter_current_data(data):
     data_current = data[data.index.year == datetime.datetime.now().year]
     return data_current
 
+set_page_config = st.set_page_config(
+    page_title="Datos recientes",
+    page_icon="🌤️",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
 
 st.markdown("# Datos recientes")
 st.write(

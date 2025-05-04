@@ -84,6 +84,16 @@ st.write(
 #Seleccionar un período de tiempo y representar período de tiempo
 data = load_daily_data()
 raw_data = load_10min_data()
+data.rename(columns = get_dict_rename_cols(), inplace=True)
+
+# Crear el histograma
+st.markdown('## Histograma')
+st.write("Histogramas de las variables seleccionadas")
+# Seleccionar una variable del dataset
+column = select_column_box(data, key = data.columns[0])
+
+st.write(f"Histograma interactivo de {column}. {len(data[column].dropna())} valores usados.")
+plot_interactive_histogram(data, column)
 
 #Crear rosa de los vientos con datos 10-minutales
 st.markdown("## Rosa de los vientos")
@@ -94,25 +104,14 @@ wind_rose_data = get_df_wind_rose(wind_data)
 plot_interactive_wind_rose(wind_rose_data)
 
 # Crear tabla de ránking mensual
-st.markdown('## Ránking mensual')
-st.write("Ránking mensual de las variables seleccionadas")
+st.markdown('## Ránking mensual en tabla')
 monthly_data = get_monthly_data(data)
 monthly_ranking = get_monthly_data_ranking(monthly_data)
 st.dataframe(monthly_ranking)
 
 # Crear tabla de ránking diario
-st.markdown('## Ránking diario')
-st.write("Ránking diario de las variables seleccionadas")
-data.rename(columns = get_dict_rename_cols(), inplace=True)
+st.markdown('## Ránking diario en tabla')
 daily_ranking = get_daily_data_ranking(data)
 st.dataframe(daily_ranking)
 
-# Crear el histograma
-st.markdown('## Histograma')
-st.write("Histogramas de las variables seleccionadas")
-# Seleccionar una variable del dataset
-column = select_column_box(data, key = data.columns[0])
-
-st.write(f"Histograma interactivo de {column}. {len(data[column].dropna())} valores usados.")
-plot_interactive_histogram(data, column)
 

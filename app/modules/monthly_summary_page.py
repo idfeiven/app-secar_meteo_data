@@ -3,6 +3,8 @@ import pandas as pd
 from common import load_daily_data, get_monthly_data
 
 # -----------------------------------MAIN PROGRAM-----------------------------------
+st.set_page_config(page_title="Resúmenes mensuales de datos", page_icon="📊", layout="wide")
+
 daily_data = load_daily_data()
 monthly_data = get_monthly_data(daily_data)
 

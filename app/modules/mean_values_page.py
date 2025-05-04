@@ -19,6 +19,9 @@ def get_monthly_data_means(monthly_data):
 
 # -----------------------------------MAIN PROGRAM-----------------------------------
 
+st.set_page_config(page_title="Valores medios mensuales", page_icon=":bar_chart:", layout="wide")
+st.title("Valores medios mensuales")
+
 daily_data = load_daily_data()
 monthly_data = get_monthly_data(daily_data)
 monthly_data_means = get_monthly_data_means(monthly_data)

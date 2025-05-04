@@ -65,10 +65,11 @@ def plot_interactive_historical(data_filter, column):
         st.plotly_chart(fig)
 
 #----------------------------------MAIN----------------------------------#
+st.set_page_config(page_title="Datos históricos", page_icon="📈", layout="wide")
 
 st.markdown("# Datos históricos")
 st.write(
-    """En esta página puedes inspeccionar datos históricos del clima"""
+    """En esta página puedes inspeccionar datos históricos de la estación"""
 )
 
 # Crear gráfico de una variable del dataset para el período seleccionado

@@ -4,6 +4,7 @@ import streamlit as st
 import plotly.express as px
 import matplotlib.pyplot as plt
 
+#--------------------------------FUNCTIONS----------------------------------#
 
 def _get_url_api_wu(mode): #set mode. Accepts current, daily
     station_id = 'IPALMA141' #select a station id from Weather Underground
@@ -103,6 +104,8 @@ def plot_interactive_current(data_current, column):
     fig = px.line(data_current, x=data_current.index, y=f"{column}")
     st.plotly_chart(fig)
 
+# -----------------------------------MAIN PROGRAM-----------------------------------
+st.set_page_config(page_title="Resumen diario de Palma Secar de la Real", page_icon="📊", layout="wide")
 
 st.markdown("# Resumen diario de Palma Secar de la Real")
 
