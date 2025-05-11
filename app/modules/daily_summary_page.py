@@ -82,11 +82,19 @@ def parse_today_data(today_data):
                              'metric.windspeedAvg', 'metric.heatindexAvg', 'metric.pressureMin',
                              'metric.pressureMax', 'metric.precipRate', 'metric.precipTotal']]
     
-    dict_rename = {'obsTimeLocal': 'datetime_local', 'humidityAvg': 'humidity_perc_mean', 'humidityHigh': 'humidity_perc_max',
-                'humidityLow': 'humidity_perc_min', 'metric.tempHigh': 'temperature_deg_max', 'metric.tempLow': 'temperature_deg_min',
-                'metric.tempAvg': 'temperature_deg_mean', 'metric.windspeedAvg': 'wind_gust_kmh',
-                'metric.heatindexAvg': 'heat_index_deg', 'metric.pressureMin': 'pressure_min_hPa', 'metric.pressureMax': 'pressure_max_hPa',
-                'metric.precipRate': 'rain_rate_mmh', 'metric.precipTotal': 'pcp_acum_mm'}
+    dict_rename = {'obsTimeLocal': 'Fecha y hora local', 
+                   'humidityAvg': 'Humedad media', 
+                   'humidityHigh': 'Humedad máxima',
+                   'humidityLow': 'Humedad mínima', 
+                   'metric.tempHigh': 'Temperatura máxima', 
+                   'metric.tempLow': 'Temperatura mínima',
+                   'metric.tempAvg': 'Temperatura media', 
+                   'metric.windspeedAvg': 'Ráfaga viento km/h',
+                   'metric.heatindexAvg': 'Índice calor', 
+                   'metric.pressureMin': 'Presión mínima hPa', 
+                   'metric.pressureMax': 'Presión máxima hPa',
+                   'metric.precipRate': 'Tasa lluvia mm/h', 
+                   'metric.precipTotal': 'Precipitación acumulada mm'}
     
     today_data = today_data.copy()
     today_data.rename(columns = dict_rename, inplace=True)
