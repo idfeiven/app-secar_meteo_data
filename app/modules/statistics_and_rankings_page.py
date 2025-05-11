@@ -84,16 +84,16 @@ st.write(
 #Seleccionar un período de tiempo y representar período de tiempo
 data = load_daily_data()
 raw_data = load_10min_data()
-data.rename(columns = get_dict_rename_cols(), inplace=True)
+data_r =  data.rename(columns = get_dict_rename_cols())
 
 # Crear el histograma
 st.markdown('## Histograma')
 st.write("Histogramas de las variables seleccionadas")
 # Seleccionar una variable del dataset
-column = select_column_box(data, key = data.columns[0])
+column = select_column_box(data_r, key = data.columns[0])
 
-st.write(f"Histograma interactivo de {column}. {len(data[column].dropna())} valores usados.")
-plot_interactive_histogram(data, column)
+st.write(f"Histograma interactivo de {column}. {len(data_r[column].dropna())} valores usados.")
+plot_interactive_histogram(data_r, column)
 
 #Crear rosa de los vientos con datos 10-minutales
 st.markdown("## Rosa de los vientos")
