@@ -29,7 +29,7 @@ def get_monthly_data_ranking(monthly_data):
     for col in monthly_data.drop('date', axis = 1).columns:
         monthly_ranking_var = monthly_data.sort_values(by = col, ascending=False).reset_index()[['date', col]]
         monthly_ranking_var["date"] = monthly_ranking_var["date"].dt.strftime("%Y-%m")
-        monthly_ranking_var.rename(columns = {"date": f"Month of {col}"}, inplace = True)
+        monthly_ranking_var.rename(columns = {"date": f"Mes de {col}"}, inplace = True)
         monthly_ranking = pd.concat([monthly_ranking, monthly_ranking_var], axis = 1)
 
     return(monthly_ranking)

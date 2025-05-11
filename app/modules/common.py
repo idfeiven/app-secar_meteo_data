@@ -204,6 +204,6 @@ def get_monthly_data(daily_data):
 
     monthly_pcp_data = daily_data.resample('ME').sum()[['pcp (mm)']]
     #group all monthly data
-    monthly_data = pd.concat([max_monthly_data, min_monthly_data, mean_monthly_data, monthly_pcp_data], axis = 1).rename(columns = {'pcp (mm)': 'Monthly precipitation (mm)'})
+    monthly_data = pd.concat([max_monthly_data, min_monthly_data, mean_monthly_data, monthly_pcp_data], axis = 1).rename(columns = {'pcp (mm)': 'Precipitación mensual (mm)'})
     monthly_data = monthly_data.reset_index()  
     return(monthly_data) 
