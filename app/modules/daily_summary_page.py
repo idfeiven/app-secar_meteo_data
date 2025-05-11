@@ -98,8 +98,8 @@ def parse_today_data(today_data):
     
     today_data = today_data.copy()
     today_data.rename(columns = dict_rename, inplace=True)
-    today_data.loc[:, 'datetime_local'] = pd.to_datetime(today_data['datetime_local'])
-    today_data.set_index('datetime_local', inplace=True)
+    today_data.loc[:, 'Fecha y hora local'] = pd.to_datetime(today_data['Fecha y hora local'])
+    today_data.set_index('Fecha y hora local', inplace=True)
     for col in today_data.columns:
         today_data.loc[:, col] = pd.to_numeric(today_data[col])
 
