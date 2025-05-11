@@ -184,23 +184,23 @@ def get_monthly_data(daily_data):
     #resample daily data to monthly data:
     max_monthly_data = daily_data.resample('ME').max()\
                         [['high_temp_deg', 'wind_gust_kmh', 'rain_10min_mm', 'rain_rate_mmh']]\
-                        .rename(columns = {'high_temp_deg': 'Monthly max. temperature (°C)',
-                                           'wind_gust_kmh': 'Monthly max. wind gust (km/h)',
-                                           'rain_10min_mm': 'Monthly max. rain in 10 minutes (mm)',
-                                           'rain_rate_mmh': 'Monthly max. instantaneous rain rate (mm/h)'})
+                        .rename(columns = {'high_temp_deg': 'Temperatura máxima mensual (°C)',
+                                           'wind_gust_kmh': 'Racha de viento máxima mensual (km/h)',
+                                           'rain_10min_mm': 'Precipitación máxima 10-minutal (mm)',
+                                           'rain_rate_mmh': 'Máxima intensidad de lluvia (mm/h)'})
 
     min_monthly_data = daily_data.resample('ME').min()[['low_temp_deg']]\
-        .rename(columns= {'low_temp_deg': 'Monthly min. temperature (°C)'})
+        .rename(columns= {'low_temp_deg': 'Temperatura mínima mensual (°C)'})
 
     mean_monthly_data = daily_data\
         .resample('ME').mean()[['temp_out_deg', 'high_temp_deg', 'low_temp_deg' ,'mean_rel_humidity_perc', 'dewpoint_deg', 'wind_speed_kmh', 'mean_pressure_hPa']]\
-        .rename(columns={'temp_out_deg': 'Monthly mean temperature (°C)',
-                         'high_temp_deg': 'Monthly mean max. temperatures (°C)',
-                         'low_temp_deg': 'Monthly mean min. temperatures (°C)',
-                         'mean_rel_humidity_perc': 'Monthly mean relative humidity (%)',
-                         'dewpoint_deg': 'Monthly mean dewpoint (°C)',
-                         'wind_speed_kmh': 'Monthly mean wind speed (km/h)',
-                         'mean_pressure_hPa': 'Monthly mean pressure (hPa)'})
+        .rename(columns={'temp_out_deg': 'Temperatura media mensual (°C)',
+                         'high_temp_deg': 'Media mensual de temperaturas máximas (°C)',
+                         'low_temp_deg': 'Media mensual de temperaturas mínimas (°C)',
+                         'mean_rel_humidity_perc': 'Humedad relativa media mensual (%)',
+                         'dewpoint_deg': 'Punto de rocío medio mensual (°C)',
+                         'wind_speed_kmh': 'Velocidad media mensual del viento (km/h)',
+                         'mean_pressure_hPa': 'Presión media mensual (hPa)'})
 
     monthly_pcp_data = daily_data.resample('ME').sum()[['pcp (mm)']]
     #group all monthly data
