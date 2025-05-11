@@ -20,7 +20,7 @@ def get_daily_data_ranking(data):
         daily_ranking = pd.concat([daily_ranking,
                                    data.sort_values(by = col, ascending=False).reset_index()[['date', col]]],
                                    axis = 1)
-        daily_ranking.rename(columns = {"date": f"date {col}"}, inplace=True)
+        daily_ranking.rename(columns = {"date": f"Fecha de {col}"}, inplace=True)
     return(daily_ranking)
 
 
@@ -111,7 +111,7 @@ st.dataframe(monthly_ranking)
 
 # Crear tabla de ránking diario
 st.markdown('## Ránking diario en tabla')
-daily_ranking = get_daily_data_ranking(data)
+daily_ranking = get_daily_data_ranking(data_r)
 st.dataframe(daily_ranking)
 
 
