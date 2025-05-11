@@ -38,40 +38,21 @@ def get_current_weather_data(mode): #set mode. Accepts current, daily
 
 def get_daily_summary(today_data):
 
-    daily_mins = today_data.resample('1D').min()[['temperature_deg_min', 'humidity_perc_min',
-                                                 'wind_gust_kmh', 'heat_index_deg',
-                                                 'pressure_min_hPa', 'rain_rate_mmh', 'pcp_acum_mm']]
+    daily_mins = today_data.resample('1D').min()[['Temperatura mínima', 'Humedad mínima',
+                                                 'Ráfaga viento km/h', 'Índice calor',
+                                                 'Presión mínima hPa', 'Tasa lluvia mm/h', 'Precipitación acumulada mm']]
     
-    daily_maxs = today_data.resample('1D').max()[['temperature_deg_max', 'humidity_perc_max',
-                                                 'wind_gust_kmh', 'heat_index_deg',
-                                                 'pressure_max_hPa', 'rain_rate_mmh', 'pcp_acum_mm']]
+    daily_maxs = today_data.resample('1D').max()[['Temperatura máxima', 'Humedad máxima',
+                                                 'Ráfaga viento km/h', 'Índice calor',
+                                                 'Presión máxima hPa', 'Tasa lluvia mm/h', 'Precipitación acumulada mm']]
     
-    daily_means = today_data.resample('1D').mean()[['temperature_deg_mean', 'humidity_perc_mean',
-                                                 'wind_gust_kmh', 'heat_index_deg',
-                                                 'pressure_min_hPa', 'rain_rate_mmh', 'pcp_acum_mm']]
+    daily_means = today_data.resample('1D').mean()[['Temperatura media', 'Humedad media',
+                                                 'Ráfaga viento km/h', 'Índice calor',
+                                                 'Presión mínima hPa', 'Tasa lluvia mm/h', 'Precipitación acumulada mm']]
 
     daily_summary = pd.concat([daily_maxs, daily_mins, daily_means], axis = 0)
-    daily_summary['Summary'] = ['Max value', 'Min value', 'Mean value']
-    daily_summary.set_index('Summary', inplace=True)
-
-    daily_summary.loc['Min value', 'temperature_deg_max'] = daily_summary.loc['Min value', 'temperature_deg_min']
-    daily_summary.loc['Mean value', 'temperature_deg_max'] = daily_summary.loc['Mean value', 'temperature_deg_mean']
-    daily_summary.loc['Min value', 'humidity_perc_max'] = daily_summary.loc['Min value', 'humidity_perc_min']
-    daily_summary.loc['Mean value', 'humidity_perc_max'] = daily_summary.loc['Mean value', 'humidity_perc_mean']
-    daily_summary.loc['Min value', 'pressure_max_hPa'] = daily_summary.loc['Min value', 'pressure_min_hPa']
-    daily_summary.loc['Mean value', 'pressure_max_hPa'] = daily_summary.loc['Mean value', 'pressure_min_hPa']
-
-    daily_summary.rename(columns = {'temperature_deg_max': 'Temperatura (°C)',
-                                    'humidity_perc_max': 'Humedad (%)',
-                                    'wind_gust_kmh': 'Ráfaga de viento (km/h)',
-                                    'heat_index_deg': 'Índice de calor (°C)',
-                                    'pressure_max_hPa': 'Presión (hPa)',
-                                    'rain_rate_mmh': 'Tasa de lluvia (mm/h)',
-                                    'pcp_acum_mm': 'Precipitación acumulada (mm)'}, inplace=True)
-    
-    daily_summary.drop(['temperature_deg_min', 'humidity_perc_min',
-                         'pressure_min_hPa', 'temperature_deg_mean',
-                           'humidity_perc_mean'], axis = 1, inplace=True)
+    daily_summary['Resumen'] = ['Valor máximo', 'Valor mínimo', 'Valor medio']
+    daily_summary.set_index('Resumen', inplace=True)
 
     return daily_summary        
 
