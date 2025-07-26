@@ -94,10 +94,10 @@ st.markdown('## Número de días con temperatura mínima alcanzando diferentes u
 n_nights_classific = get_warm_nights_totals(daily_data)
 df_tropical_nights = get_warm_nights_cumsum(daily_data, thres = 20.0)
 df_scorching_nights = get_warm_nights_cumsum(daily_data, thres = 25.0)
-df_infernal_nights = get_warm_nights_cumsum(daily_data, thres = 30.0)
+# df_infernal_nights = get_warm_nights_cumsum(daily_data, thres = 30.0)
 
 
-col = select_column_box(n_nights_classific, key = n_nights_classific.columns[0])
+# col = select_column_box(n_nights_classific, key = n_nights_classific.columns[0])
 
 st.markdown('## Número anual de noches cálidas')
 st.dataframe(n_nights_classific, use_container_width=True)
@@ -115,9 +115,9 @@ fig = plot_interactive_data_by_year(df_scorching_nights,
                               yaxis_title = "Número acumulado de días con temperatura mínima >= 25 °C")
 st.plotly_chart(fig, use_container_width=True)
 
-fig = plot_interactive_data_by_year(df_infernal_nights,
-                              value_col= "Total de días con temperatura mínima >= 30 °C",
-                              title = "Número acumulado de días con temperatura mínima >= 30 °C",
-                              yaxis_title = "Número acumulado de días con temperatura mínima >= 30 °C")
-st.plotly_chart(fig, use_container_width=True)
+# fig = plot_interactive_data_by_year(df_infernal_nights,
+#                               value_col= "Total de días con temperatura mínima >= 30 °C",
+#                               title = "Número acumulado de días con temperatura mínima >= 30 °C",
+#                               yaxis_title = "Número acumulado de días con temperatura mínima >= 30 °C")
+# st.plotly_chart(fig, use_container_width=True)
 
