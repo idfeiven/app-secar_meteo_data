@@ -64,8 +64,8 @@ def get_warm_nights_cumsum(daily_data, thres):
         
         df_warm_nights = daily_data_year[daily_data_year['low_temp_deg'] >= thres]
         df_warm_nights = df_warm_nights.copy()
-        
-        df_warm_nights[col_name] = np.arange(1, df_warm_nights["pcp (mm)"].count()+1, 1)
+
+        df_warm_nights[col_name] = np.arange(1, df_warm_nights["daily_rain_gage_mm"].count()+1, 1)
         df_warm_nights = df_warm_nights[[col_name]]
         
         df_warm_nights.reset_index(inplace=True)
@@ -92,7 +92,10 @@ daily_data = load_daily_data()
 st.markdown('## Número de días con temperatura mínima alcanzando diferentes umbrales cálidos')
 n_nights_classific = get_warm_nights_totals(daily_data)
 df_tropical_nights = get_warm_nights_cumsum(daily_data, thres = 20.0)
+df_tropical_nights = df_tropical_nights[df_tropical_nights.index.year>=2021]
+
 df_scorching_nights = get_warm_nights_cumsum(daily_data, thres = 25.0)
+df_scorching_nights = df_scorching_nights[df_scorching_nights.index.year>=2021]
 # df_infernal_nights = get_warm_nights_cumsum(daily_data, thres = 30.0)
 
 

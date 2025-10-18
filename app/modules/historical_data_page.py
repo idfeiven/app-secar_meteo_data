@@ -21,8 +21,8 @@ def select_history_data_type(key = "Datos diarios"):
     
     elif data_type == "Datos 10-minutales":
         raw_data = load_10min_data()
-        raw_data['pcp (mm)'] = np.nan
-        raw_data['daily_rain_mm'] = np.nan
+        raw_data['daily_rain_gage_mm'] = np.nan
+        raw_data['daily_rain_pws_mm'] = np.nan
         raw_data.rename(columns = get_dict_rename_cols(), inplace=True)
         return raw_data, data_type
 

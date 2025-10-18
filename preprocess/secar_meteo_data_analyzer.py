@@ -93,7 +93,7 @@ def get_daily_data(data_parsed):
     mean_daily_data = data_parsed.drop(["wind_direction", "wind_gust_dir"], axis = 1).set_index('date').resample('D').mean()[['temp_out_deg', 'rel_humidity_perc', 'dewpoint_deg', 'wind_speed_kmh', 'pressure_hPa']]
     mean_daily_data.rename(columns = {"pressure_hPa": "mean_pressure_hPa", "rel_humidity_perc": "mean_rel_humidity_perc"}, inplace=True)
 
-    daily_pcp_data_stn = data_parsed.drop(["wind_direction", "wind_gust_dir"], axis = 1).set_index('date').resample('D').sum()[['rain_10min_mm']].rename(columns = {'rain_10min_mm': 'daily_rain_mm'})
+    daily_pcp_data_stn = data_parsed.drop(["wind_direction", "wind_gust_dir"], axis = 1).set_index('date').resample('D').sum()[['rain_10min_mm']].rename(columns = {'rain_10min_mm': 'daily_rain_pws_mm'})
     
     #group all daily data
     daily_data = pd.concat([max_daily_data, min_daily_data, daily_pcp_data_stn, mean_daily_data], axis = 1)
@@ -106,12 +106,13 @@ def get_daily_data(data_parsed):
 def update_daily_data(daily_data):
     manual_pcp_data = pd.read_excel(path_manual_pcp_data)
     manual_pcp_data.drop(['Unnamed: 0'], axis = 1, inplace=True)
+    manual_pcp_data.rename(columns={'pcp (mm)': 'daily_rain_gage_mm'}, inplace=True)
     daily_data = manual_pcp_data.merge(daily_data, how = 'left', on = 'date')
     daily_data.to_excel(Path(__file__).parent.parent / "data" / "secar_daily_data.xlsx")
     return(daily_data)
 
 
-def calculate_error_metrics(df, col_true='daily_rain_mm', col_est='pcp (mm)'):
+def calculate_error_metrics(df, col_true='daily_rain_pws_mm', col_est='daily_rain_gage_mm'):
     """
     Compara dos columnas cualesquiera de un DataFrame y calcula MAE, RMSE
     y error medio relativo (MAPE, en %) sobre los eventos con precipitación
@@ -196,7 +197,7 @@ def calculate_error_metrics(df, col_true='daily_rain_mm', col_est='pcp (mm)'):
         'n': int(len(df))
     }
 
-def plot_mape_by_precip_intervals(daily_df, col_true='daily_rain_mm', col_est='pcp (mm)'):
+def plot_mape_by_precip_intervals(daily_df, col_true='daily_rain_pws_mm', col_est='daily_rain_gage_mm'):
     """
     Calcula y representa el MAPE (%) por intervalos de precipitación tomando
     como referencia la columna `col_true` (por defecto 'daily_rain_mm').

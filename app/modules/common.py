@@ -15,14 +15,14 @@ def select_column_box(data, key):
 
 def get_dict_rename_cols():
 
-    dict_rename_cols = {"pcp (mm)": "Precipitación diaria (pluviómetro manual, mm)",
+    dict_rename_cols = {"daily_rain_gage_mm": "Precipitación diaria (pluviómetro manual, mm)",
                       "high_temp_deg": "Temperatura máxima (°C)",
                       "wind_gust_kmh": "Ráfaga de viento (km/h)",
                       "wind_gust_dir": "Dirección de ráfaga de viento (°)",
                       "rain_10min_mm": "Precipitación en 10 minutos (mm)",
                       "rain_rate_mmh": "Tasa de lluvia instantánea (mm/h)",
                       "low_temp_deg": "Temperatura mínima (°C)",
-                      "daily_rain_mm": "Precipitación diaria (estación meteorológica, mm)",
+                      "daily_rain_pws_mm": "Precipitación diaria (estación meteorológica, mm)",
                       "temp_out_deg": "Temperatura (°C)",
                       "rel_humidity_perc": "Humedad (%)",
                       "mean_rel_humidity_perc": "Humedad media (%)",
@@ -129,6 +129,33 @@ def plot_interactive_data_by_year(df, value_col, title, yaxis_title):
 
     return fig
 
+def plot_interactive_data_cumsum_by_year(df, value_col, title, yaxis_title):
+
+    fig = go.Figure()
+    
+    # Añadir columna con fecha ficticia para alineación
+    df['aligned_date'] = pd.to_datetime('2000-' + df.index.strftime('%m-%d'))
+
+    for year in sorted(df.dropna(subset=value_col).index.year.unique()):
+        yearly_data = df[df.index.year == year]
+        fig.add_trace(go.Scatter(
+            x=yearly_data['aligned_date'],
+            y=yearly_data[value_col].cumsum(),
+            mode='lines',
+            name=str(year)
+        ))
+
+    fig.update_layout(
+        title=title,
+        xaxis_title='Día del año',
+        yaxis_title=yaxis_title,
+        xaxis=dict(tickformat='%d-%m'),
+        height=500,
+        width=900
+    )
+
+    return fig
+
 
 def plot_interactive_comparison_cumulative_data(df,
                                                 year,
@@ -202,8 +229,8 @@ def get_monthly_data(daily_data):
                          'wind_speed_kmh': 'Velocidad media mensual del viento (km/h)',
                          'mean_pressure_hPa': 'Presión media mensual (hPa)'})
 
-    monthly_pcp_data = daily_data.resample('ME').sum()[['pcp (mm)']]
+    monthly_pcp_data = daily_data.resample('ME').sum()[['daily_rain_gage_mm']]
     #group all monthly data
-    monthly_data = pd.concat([max_monthly_data, min_monthly_data, mean_monthly_data, monthly_pcp_data], axis = 1).rename(columns = {'pcp (mm)': 'Precipitación mensual (mm)'})
+    monthly_data = pd.concat([max_monthly_data, min_monthly_data, mean_monthly_data, monthly_pcp_data], axis = 1).rename(columns = {'daily_rain_gage_mm': 'Precipitación mensual (mm)'})
     monthly_data = monthly_data.reset_index()  
     return(monthly_data) 

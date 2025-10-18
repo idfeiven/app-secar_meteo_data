@@ -67,7 +67,7 @@ def plot_interactive_histogram(data, column):
     if data[column].empty:
         st.write("No data to plot. Check variable availability in the variable description table.")
     else:
-        if column == 'pcp (mm)' or column == 'daily_rain_mm':
+        if column == 'daily_rain_gage_mm' or column == 'daily_rain_pws_mm':
             data = data[ data[column] >= 1. ] 
         fig = px.histogram(data[column].dropna(), x=f"{column}", nbins = 30)
         st.plotly_chart(fig)
