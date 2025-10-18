@@ -66,7 +66,6 @@ def get_warm_nights_cumsum(daily_data, thres):
         df_warm_nights = df_warm_nights.copy()
         
         df_warm_nights[col_name] = np.arange(1, df_warm_nights["pcp (mm)"].count()+1, 1)
-        df_warm_nights[col_name] = df_warm_nights[col_name] - 1
         df_warm_nights = df_warm_nights[[col_name]]
         
         df_warm_nights.reset_index(inplace=True)
@@ -74,9 +73,9 @@ def get_warm_nights_cumsum(daily_data, thres):
         df_warm_nights = df_warm_nights.merge(daily_data_year, how = "right")
 
         df_warm_nights.set_index("date", inplace=True)
-        df_warm_nights = df_warm_nights[[col_name]].bfill()
         df_warm_nights = df_warm_nights[[col_name]].ffill()
         df_warm_nights = df_warm_nights.convert_dtypes("int")
+        df_warm_nights = df_warm_nights.fillna(0)
 
         df_warm_nights_cumsum = pd.concat([df_warm_nights_cumsum, df_warm_nights], axis = 0)
 
