@@ -11,12 +11,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-# todo correct daily precipitation data from daily_manual_rain_gage_data.xlsx
-# todo 1 - load daily pcp data from daily_manual_rain_gage_data.xlsx
-# todo 2 - filter non null values
-# todo 3 - filter non corrected values
-# todo 4 - calculate discrepancies with daily_rain_pws_mm
-# todo 5 - correct highest discrepancies with mape results by intervals
 
 def calculate_error_metrics(df, col_true='daily_rain_pws_mm', col_est='daily_rain_gage_mm'):
     """
@@ -185,7 +179,23 @@ def plot_mape_by_precip_intervals(daily_df, col_true='daily_rain_pws_mm', col_es
 daily_data = pd.read_excel("secar_daily_data.xlsx")
 
 print('Analizando datos de precipitación diarios')
-calculate_error_metrics(daily_data)
+err_metrics = calculate_error_metrics(daily_data)
 
 print('Representando MAPE por intervalos de precipitación')
-plot_mape_by_precip_intervals(daily_data)
+res_df = plot_mape_by_precip_intervals(daily_data)
+
+# Esperar a tener una climatología más larga en los datos de lluvia
+# nn_pcp = daily_data[(daily_data['daily_rain_gage_mm']>0.0) & daily_data['daily_rain_pws_mm']>0.0]
+# nn_pcp = nn_pcp[['date', 'daily_rain_gage_mm', 'daily_rain_pws_mm']]
+# nn_pcp['discr'] = nn_pcp['daily_rain_gage_mm'] - nn_pcp['daily_rain_pws_mm']
+# nn_pcp['discr'] = nn_pcp['discr'].round(1)
+# nn_pcp_discr = nn_pcp[nn_pcp['discr'] < -0.6]
+
+# bins = [0, 5, 10, 20, np.inf]
+# labels = ['[0,5)', '[5,10)', '[10,20)', '>=20']
+# nn_pcp_discr_bin = pd.cut(nn_pcp_discr['daily_rain_gage_mm'], bins=bins, right=False, labels=labels)
+# nn_pcp_discr.rename({'daily_rain_gage_mm_bin': 'interval'}, axis = 1, inplace=True)
+# res_df.reset_index(inplace=True)
+# res_df.merge(nn_pcp_discr, how='left')
+# Faltaría aplicar la corrección
+# todo 5 - correct highest discrepancies with mape results by intervals
