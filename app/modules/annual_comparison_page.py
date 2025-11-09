@@ -36,17 +36,16 @@ fig = plot_interactive_data_by_year(daily_data, 'mean_rel_humidity_perc', "Humed
 st.plotly_chart(fig, use_container_width=True)
 
 st.markdown("## Precipitación diaria")
-fig = plot_interactive_data_by_year(daily_data, 'daily_rain_gage_mm', "Precipitación diaria", "mm")
+fig = plot_interactive_data_by_year(daily_data, 'daily_rain_mm_corr', "Precipitación diaria", "mm")
 st.plotly_chart(fig, use_container_width=True)
 
-fig = plot_interactive_data_cumsum_by_year(daily_data, 'daily_rain_gage_mm', "Precipitación diaria acumulada", "mm")
+fig = plot_interactive_data_cumsum_by_year(daily_data, 'daily_rain_mm_corr', "Precipitación diaria acumulada", "mm")
 st.plotly_chart(fig, use_container_width=True)
 
 fig = plot_interactive_comparison_cumulative_data(daily_data,
                                                   2025,
-                                                  'daily_rain_gage_mm',
-                                                  'daily_rain_pws_mm',
-                                                  'daily_rain_gage_mm',
+                                                  'daily_rain_mm_corr',
+                                                  'daily_rain_mm_corr',
                                                   "Precipitación diaria acumulada. Comparación entre estación meteorológica y pluviómetro manual",
                                                   "mm")
 st.plotly_chart(fig, use_container_width=True)

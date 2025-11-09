@@ -83,6 +83,8 @@ st.write(
 
 #Seleccionar un período de tiempo y representar período de tiempo
 data = load_daily_data()
+data = data.drop(columns=['correction', 'storm', 'daily_rain_pws_mm', 'daily_rain_gage_mm'])
+
 raw_data = load_10min_data()
 data_r =  data.rename(columns = get_dict_rename_cols())
 

@@ -16,6 +16,7 @@ def select_history_data_type(key = "Datos diarios"):
     data_type = st.selectbox("Selecciona el tipo de datos a representar", ["Datos 10-minutales", "Datos diarios"], key = key)
     if data_type == "Datos diarios":
         daily_data = load_daily_data()
+        daily_data = daily_data.drop(columns=['correction', 'storm', 'daily_rain_pws_mm', 'daily_rain_gage_mm'])
         daily_data.rename(columns = get_dict_rename_cols(), inplace=True)
         return daily_data, data_type
     

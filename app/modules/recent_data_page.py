@@ -23,6 +23,8 @@ st.write(
 )
 
 data = load_daily_data()
+data = data.drop(columns=['correction', 'storm', 'daily_rain_pws_mm', 'daily_rain_gage_mm'])
+
 data.rename(columns = get_dict_rename_cols(), inplace=True)
 data_current = filter_current_data(data)
 column = select_column_box(data, key = data.columns[0])

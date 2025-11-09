@@ -34,7 +34,9 @@ def get_dict_rename_cols():
                       "pressure_hPa": "Presión a nivel del mar (hPa)",
                       "mean_pressure_hPa": "Presión media a nivel del mar (hPa)",
                       "max_pressure_hPa": "Presión máxima a nivel del mar (hPa)",
-                      "min_pressure_hPa": "Presión mínima a nivel del mar (hPa)"}
+                      "min_pressure_hPa": "Presión mínima a nivel del mar (hPa)",
+                      "daily_rain_mm_corr": "Precipitación diaria corregida (mm)"
+                      }
 
     return dict_rename_cols
 
@@ -77,9 +79,8 @@ def get_df_variable_description(data):
 @st.cache_data
 def load_daily_data():
     parent_dir = Path(__file__).parent
-    data_dir = parent_dir.parent.parent / "data" / "secar_daily_data.xlsx"
+    data_dir = parent_dir.parent.parent / "data" / "secar_daily_data_corrected.xlsx"
     daily_data = pd.read_excel(data_dir)
-    daily_data = daily_data.drop('Unnamed: 0', axis = 1)
     daily_data.set_index('date', inplace = True)
     return daily_data
 
@@ -160,7 +161,6 @@ def plot_interactive_data_cumsum_by_year(df, value_col, title, yaxis_title):
 def plot_interactive_comparison_cumulative_data(df,
                                                 year,
                                                 col_1,
-                                                col_2,
                                                 col_mean,
                                                 title,
                                                 yaxis_title):
@@ -181,12 +181,12 @@ def plot_interactive_comparison_cumulative_data(df,
         name=col_1+str(year)
     ))
 
-    fig.add_trace(go.Scatter(
-    x=yearly_data['aligned_date'],
-    y=yearly_data[col_2].cumsum(),
-    mode='lines',
-    name=col_2+str(year)
-    ))
+    # fig.add_trace(go.Scatter(
+    # x=yearly_data['aligned_date'],
+    # y=yearly_data[col_2].cumsum(),
+    # mode='lines',
+    # name=col_2+str(year)
+    # ))
 
     fig.add_trace(go.Scatter(
     x=yearly_data['aligned_date'],
@@ -229,8 +229,8 @@ def get_monthly_data(daily_data):
                          'wind_speed_kmh': 'Velocidad media mensual del viento (km/h)',
                          'mean_pressure_hPa': 'Presión media mensual (hPa)'})
 
-    monthly_pcp_data = daily_data.resample('ME').sum()[['daily_rain_gage_mm']]
+    monthly_pcp_data = daily_data.resample('ME').sum()[['daily_rain_mm_corr']]
     #group all monthly data
-    monthly_data = pd.concat([max_monthly_data, min_monthly_data, mean_monthly_data, monthly_pcp_data], axis = 1).rename(columns = {'daily_rain_gage_mm': 'Precipitación mensual (mm)'})
+    monthly_data = pd.concat([max_monthly_data, min_monthly_data, mean_monthly_data, monthly_pcp_data], axis = 1).rename(columns = {'daily_rain_mm_corr': 'Precipitación mensual (mm)'})
     monthly_data = monthly_data.reset_index()  
     return(monthly_data) 

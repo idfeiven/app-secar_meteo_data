@@ -17,8 +17,9 @@ def calculate_error_metrics(df, col_true='daily_rain_pws_mm', col_est='daily_rai
     Compara dos columnas cualesquiera de un DataFrame y calcula MAE, RMSE
     y error medio relativo (MAPE, en %) sobre los eventos con precipitación
     (al menos una de las dos columnas > 0).
-    Mantiene compatibilidad por defecto con 'pcp (mm)' vs 'daily_rain_mm'.
-    Además genera un scatter plot (estimado en x, verdadero en y) con la línea y=x.
+    Además genera un scatter plot (variable independiente = col_true en x,
+    variable dependiente = col_est en y) y dibuja la recta de ajuste del tipo
+    y = a * x.
     """
 
     # Validación de columnas
@@ -35,21 +36,40 @@ def calculate_error_metrics(df, col_true='daily_rain_pws_mm', col_est='daily_rai
         print('No hay datos de precipitación para comparar')
         return None
 
-    y = df[col_true].to_numpy(dtype=float)
-    x = df[col_est].to_numpy(dtype=float)
-    err = y - x
+    # true := referencia, est := estimado
+    true = df[col_true].to_numpy(dtype=float)
+    est = df[col_est].to_numpy(dtype=float)
+    err = true - est
 
     mae = np.mean(np.abs(err))
     rmse = np.sqrt(np.mean(err**2))
 
-    # MAPE: calcular solo donde la referencia (y) > 0 para evitar división por cero
-    mask = y > 0
+    # MAPE: calcular solo donde la referencia (true) > 0 para evitar división por cero
+    mask = true > 0
     if mask.any():
-        mape = np.mean(np.abs((y[mask] - x[mask]) / y[mask])) * 100.0
+        mape = np.mean(np.abs((true[mask] - est[mask]) / true[mask])) * 100.0
         mape_n = int(mask.sum())
     else:
         mape = np.nan
         mape_n = 0
+
+    # --- Ajuste del tipo y = a * x (x = true, y = est) ---
+    finite_mask = np.isfinite(true) & np.isfinite(est)
+    a = np.nan
+    r2 = np.nan
+    if finite_mask.sum() > 0:
+        x_fit = true[finite_mask]
+        y_fit = est[finite_mask]
+        denom = np.sum(x_fit * x_fit)
+        if denom != 0:
+            a = np.sum(x_fit * y_fit) / denom
+            # R^2 de la regresión sin intercepto
+            ss_tot = np.sum((y_fit - y_fit.mean())**2)
+            ss_res = np.sum((y_fit - a * x_fit)**2)
+            if ss_tot > 0:
+                r2 = 1 - ss_res / ss_tot
+            else:
+                r2 = np.nan
 
     print(f'Columnas comparadas: {col_true} (referencia), {col_est} (estimada)')
     print(f'Analizados {len(df)} eventos de precipitación')
@@ -59,13 +79,14 @@ def calculate_error_metrics(df, col_true='daily_rain_pws_mm', col_est='daily_rai
         print(f'Error medio relativo (MAPE): {mape:.2f} % (calculado en {mape_n} eventos con referencia > 0)')
     else:
         print('MAPE no disponible: no hay eventos con referencia > 0')
+    if not np.isnan(a):
+        print(f'Ajuste sin intercepto: y = a * x, a = {a:.4f}, R² = {r2 if not np.isnan(r2) else "N/A"}')
 
-    # --- Scatter plot: estimado (x) vs verdadero (y) con línea y = x ---
+    # --- Scatter plot: verdadero (x) vs estimado (y) con recta y = a*x ---
     plt.figure(figsize=(6, 6))
-    plt.scatter(x, y, alpha=0.7, s=40, edgecolors='w', linewidth=0.5)
-    # Límites y línea y=x
-    finite_x = x[np.isfinite(x)]
-    finite_y = y[np.isfinite(y)]
+    plt.scatter(true, est, alpha=0.7, s=40, edgecolors='w', linewidth=0.5)
+    finite_x = true[np.isfinite(true)]
+    finite_y = est[np.isfinite(est)]
     if finite_x.size > 0 and finite_y.size > 0:
         lo = min(finite_x.min(), finite_y.min())
         hi = max(finite_x.max(), finite_y.max())
@@ -73,12 +94,16 @@ def calculate_error_metrics(df, col_true='daily_rain_pws_mm', col_est='daily_rai
             lo -= 1.0
             hi += 1.0
         pad = (hi - lo) * 0.05
-        line_x = [lo - pad, hi + pad]
-        plt.plot(line_x, line_x, 'r--', label='y = x')
+        line_x = np.linspace(lo - pad, hi + pad, 100)
+        if not np.isnan(a):
+            line_y = a * line_x
+            plt.plot(line_x, line_y, 'r--', label=f'y = {a:.3f} x (R²={r2:.2f})' if not np.isnan(r2) else f'y = {a:.3f} x')
+        # dibujar también la línea y = x como referencia visual si procede
+        plt.plot(line_x, line_x, 'k:', label='y = x')
         plt.xlim(lo - pad, hi + pad)
         plt.ylim(lo - pad, hi + pad)
-    plt.xlabel(f'Estimado: {col_est}')
-    plt.ylabel(f'Verdadero: {col_true}')
+    plt.xlabel(f'Verdadero (indep): {col_true}')
+    plt.ylabel(f'Estimado (dep): {col_est}')
     mape_str = f"{mape:.2f}%" if not np.isnan(mape) else "N/A"
     plt.title(f'{col_true} vs {col_est}\nMAE={mae:.2f}, RMSE={rmse:.2f}, MAPE={mape_str}')
     plt.grid(True, linestyle=':', linewidth=0.5)
@@ -94,7 +119,9 @@ def calculate_error_metrics(df, col_true='daily_rain_pws_mm', col_est='daily_rai
         'rmse': float(rmse),
         'mape_perc': (float(mape) if not np.isnan(mape) else None),
         'mape_n': mape_n,
-        'n': int(len(df))
+        'n': int(len(df)),
+        'fit_a': (float(a) if not np.isnan(a) else None),
+        'fit_r2': (float(r2) if not np.isnan(r2) else None)
     }
 
 def plot_mape_by_precip_intervals(daily_df, col_true='daily_rain_pws_mm', col_est='daily_rain_gage_mm'):
@@ -177,25 +204,32 @@ def plot_mape_by_precip_intervals(daily_df, col_true='daily_rain_pws_mm', col_es
 
 
 daily_data = pd.read_excel("secar_daily_data.xlsx")
+daily_data = daily_data.drop(columns=['Unnamed: 0'])
 
 print('Analizando datos de precipitación diarios')
-err_metrics = calculate_error_metrics(daily_data)
+err_metrics = calculate_error_metrics(daily_data, col_true='daily_rain_gage_mm', col_est='daily_rain_pws_mm')
 
 print('Representando MAPE por intervalos de precipitación')
 res_df = plot_mape_by_precip_intervals(daily_data)
 
-# Esperar a tener una climatología más larga en los datos de lluvia
-# nn_pcp = daily_data[(daily_data['daily_rain_gage_mm']>0.0) & daily_data['daily_rain_pws_mm']>0.0]
-# nn_pcp = nn_pcp[['date', 'daily_rain_gage_mm', 'daily_rain_pws_mm']]
-# nn_pcp['discr'] = nn_pcp['daily_rain_gage_mm'] - nn_pcp['daily_rain_pws_mm']
-# nn_pcp['discr'] = nn_pcp['discr'].round(1)
-# nn_pcp_discr = nn_pcp[nn_pcp['discr'] < -0.6]
+df_1 = daily_data[(daily_data['daily_rain_gage_mm']>0) & (daily_data['date']<'2021-02-06')]
+df_1_1 = df_1[df_1['correction'] != 1]
+df_1_1['daily_rain_mm_corr'] = err_metrics['fit_a']*df_1_1['daily_rain_gage_mm']
+df_1_2 = df_1[df_1['correction'] == 1]
+df_1_2['daily_rain_mm_corr'] = df_1_2['daily_rain_gage_mm']
+df_1 = pd.concat([df_1_1, df_1_2])
+df_1['daily_rain_mm_corr'] = df_1['daily_rain_mm_corr'].round(1)
 
-# bins = [0, 5, 10, 20, np.inf]
-# labels = ['[0,5)', '[5,10)', '[10,20)', '>=20']
-# nn_pcp_discr_bin = pd.cut(nn_pcp_discr['daily_rain_gage_mm'], bins=bins, right=False, labels=labels)
-# nn_pcp_discr.rename({'daily_rain_gage_mm_bin': 'interval'}, axis = 1, inplace=True)
-# res_df.reset_index(inplace=True)
-# res_df.merge(nn_pcp_discr, how='left')
-# Faltaría aplicar la corrección
-# todo 5 - correct highest discrepancies with mape results by intervals
+df_2 = daily_data[(daily_data['daily_rain_gage_mm']>0) & (daily_data['date']>='2021-02-06')]
+df_2_1 = df_2[df_2['correction'] != 1]
+df_2_1['daily_rain_mm_corr'] = df_2_1['daily_rain_pws_mm']
+df_2_2 = df_2[df_2['correction'] == 1]
+df_2_2['daily_rain_mm_corr'] = df_2_2['daily_rain_gage_mm']
+df_2 = pd.concat([df_2_1, df_2_2])
+
+df = pd.concat([df_1, df_2])
+df = df.sort_values(by='date')
+
+daily_data_corr = df.merge(daily_data, how='right')
+daily_data_corr['daily_rain_mm_corr'] = daily_data_corr['daily_rain_mm_corr'].fillna(0.0)
+daily_data_corr.to_excel("secar_daily_data_corrected.xlsx", index=False)

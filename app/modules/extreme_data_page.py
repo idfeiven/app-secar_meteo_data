@@ -178,6 +178,7 @@ st.write(
 
 # Cargar el dataset desde un archivo local
 data = load_daily_data()
+data = data.drop(columns=['correction', 'storm', 'daily_rain_pws_mm', 'daily_rain_gage_mm'])
 monthly_data = get_monthly_data(data)
 data.rename(columns = get_dict_rename_cols(), inplace=True)
 

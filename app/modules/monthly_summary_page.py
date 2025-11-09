@@ -6,6 +6,8 @@ from common import load_daily_data, get_monthly_data
 st.set_page_config(page_title="Resúmenes mensuales de datos", page_icon="📊", layout="wide")
 
 daily_data = load_daily_data()
+daily_data = daily_data.drop(columns=['correction', 'storm', 'daily_rain_pws_mm', 'daily_rain_gage_mm'])
+
 monthly_data = get_monthly_data(daily_data)
 
 st.markdown("## Resúmenes mensuales de datos")
