@@ -163,15 +163,17 @@ def plot_interactive_comparison_cumulative_data(df,
                                                 col_1,
                                                 col_mean,
                                                 title,
-                                                yaxis_title):
+                                                yaxis_title,
+                                                years_baseline=9):
 
     fig = go.Figure()
     
     # Añadir columna con fecha ficticia para alineación
     df['aligned_date'] = pd.to_datetime('2000-' + df.index.strftime('%m-%d'))
 
-    cumsum_mean = df[col_mean].groupby(df.index.strftime('%m-%d')).mean().cumsum()
     year_min = df[col_mean].dropna().index.year.min()
+    df_base = df[df.index.year < year_min + years_baseline]
+    cumsum_mean = df_base[col_mean].groupby(df_base.index.strftime('%m-%d')).mean().cumsum()
 
     yearly_data = df[df.index.year == year]
     fig.add_trace(go.Scatter(
@@ -192,7 +194,7 @@ def plot_interactive_comparison_cumulative_data(df,
     x=yearly_data['aligned_date'],
     y=cumsum_mean,
     mode='lines',
-    name=f"Media {year_min}-{year}"
+    name=f"Media {year_min}-{year_min + years_baseline}"
     ))
 
     fig.update_layout(

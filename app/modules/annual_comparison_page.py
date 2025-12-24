@@ -47,7 +47,8 @@ fig = plot_interactive_comparison_cumulative_data(daily_data,
                                                   'daily_rain_mm_corr',
                                                   'daily_rain_mm_corr',
                                                   "Precipitación diaria acumulada. Comparación entre estación meteorológica y pluviómetro manual",
-                                                  "mm")
+                                                  "mm",
+                                                  years_baseline=9)
 st.plotly_chart(fig, use_container_width=True)
 
 st.markdown("## Viento diario")
