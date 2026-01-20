@@ -1,3 +1,4 @@
+import pandas as pd
 import streamlit as st
 from common import load_daily_data,\
                    plot_interactive_data_by_year,\
@@ -42,8 +43,9 @@ st.plotly_chart(fig, use_container_width=True)
 fig = plot_interactive_data_cumsum_by_year(daily_data, 'daily_rain_mm_corr', "Precipitación diaria acumulada", "mm")
 st.plotly_chart(fig, use_container_width=True)
 
+curr_yr = pd.to_datetime("today").year
 fig = plot_interactive_comparison_cumulative_data(daily_data,
-                                                  2025,
+                                                  curr_yr,
                                                   'daily_rain_mm_corr',
                                                   'daily_rain_mm_corr',
                                                   "Precipitación diaria acumulada. Comparación entre estación meteorológica y pluviómetro manual",
