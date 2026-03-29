@@ -13,7 +13,7 @@ def get_monthly_data_means(monthly_data):
                'Precipitación máxima 10-minutal (mm)',
                'Máxima intensidad de lluvia (mm/h)',
                'Temperatura mínima mensual (°C)'], axis = 1)
-    
+    monthly_data_means["Precipitación mensual (mm)"] = monthly_data[(monthly_data.date.dt.year>=2014)&(monthly_data.date.dt.year<=2023)][["date", "Precipitación mensual (mm)"]].groupby(monthly_data['date'].dt.strftime('%m')).mean()["Precipitación mensual (mm)"].round(1)
     return(monthly_data_means)
 
 
@@ -29,7 +29,7 @@ monthly_data = get_monthly_data(daily_data)
 monthly_data_means = get_monthly_data_means(monthly_data)
 monthly_data.set_index('date', inplace = True)
 monthly_data_means.set_index('date', inplace = True)
-
+monthly_data_means = monthly_data_means.round(2)
 
 st.markdown("## Temperatura mensual")
 fig = plot_interactive_data_by_year(monthly_data, 'Media mensual de temperaturas máximas (°C)', "Temperatura máxima media mensual", "T (°C)")
