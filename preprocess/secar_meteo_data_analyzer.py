@@ -104,8 +104,11 @@ def get_daily_data(data_parsed):
 def update_daily_data(daily_data):
     manual_pcp_data = pd.read_excel(path_manual_pcp_data)
     manual_pcp_data.drop(['Unnamed: 0'], axis = 1, inplace=True)
-    manual_pcp_data.rename(columns={'pcp (mm)': 'daily_rain_gage_mm'}, inplace=True)
+    manual_pcp_data.rename(columns={'pcp (mm)': 'daily_rain_gage_mm'}, inplace=True)    
     daily_data = manual_pcp_data.merge(daily_data, how = 'left', on = 'date')
+    pws_rain_fallback = (daily_data['daily_rain_gage_mm'] == 0) & (daily_data['daily_rain_pws_mm'] > 0)
+    daily_data.loc[pws_rain_fallback, 'daily_rain_gage_mm'] = daily_data.loc[pws_rain_fallback, 'daily_rain_pws_mm']
+    
     daily_data.to_excel(Path(__file__).parent.parent / "data" / "secar_daily_data.xlsx")
     return(daily_data)
 
